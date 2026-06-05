@@ -2,5 +2,15 @@
 # tbdflow intent log (local-only, never committed)
 .tbdflow-intent.json
 .build/
+.koka/
 lib/
 vendor/
+
+# hica build artifacts
+**/*.kk
+examples/**/imgui.ini
+examples/*/*
+!examples/**/*.hc
+!examples/**/*.hml
+!examples/**/*.md
+
