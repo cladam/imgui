@@ -108,7 +108,7 @@ fun main() {
       fruit = gui_combo("Fruit", "Apple\nBanana\nCherry\nDurian", fruit)
       gui_spacing()
 
-      gui_progress_bar(volume.float / 100.0, "")
+      gui_progress_bar(to_float(volume) / 100.0, "")
       gui_end_panel()
     }
 

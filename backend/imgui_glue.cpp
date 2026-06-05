@@ -462,7 +462,16 @@ int hk_gui_selectable(const char* label, int selected) {
 int hk_gui_combo(const char* label, const char* items, int def_index) {
     int* v = int_state(label, def_index);
     if (!v) return def_index;
-    ImGui::Combo(label, v, items);
+    /* ImGui::Combo expects items separated by '\0' and terminated by '\0\0'.
+     * We accept a newline-separated string and convert it in a local buffer. */
+    static char buf[4096];
+    size_t len = strlen(items);
+    if (len >= sizeof(buf) - 1) len = sizeof(buf) - 2;
+    for (size_t i = 0; i < len; i++)
+        buf[i] = (items[i] == '\n') ? '\0' : items[i];
+    buf[len]     = '\0';
+    buf[len + 1] = '\0'; /* double-null terminator */
+    ImGui::Combo(label, v, buf);
     return *v;
 }
 
