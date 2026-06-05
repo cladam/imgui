@@ -12,7 +12,7 @@
 //   ./build.sh                         # build libimgui_hica.a (once)
 //   hica run examples/hello-gui/hello-gui.hc
 
-extern import "../../src/imgui"
+import "../../src/imgui"
 
 fun main() {
   // --- counter section ---
