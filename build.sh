@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # build.sh — build libimgui_hica.a for the hica Dear ImGui binding
 #
-# Usage:
-#   cd lib/imgui
+# Usage (from the root of this repo):
 #   ./build.sh
 #
 # Outputs:
-#   lib/imgui/lib/libimgui_hica.a   ← link with --cclib=imgui_hica
+#   lib/libimgui_hica.a   ← link with --cclib=imgui_hica
 #
 # Requirements (macOS):
 #   brew install sdl2
@@ -14,10 +13,7 @@
 # Requirements (Linux):
 #   sudo apt install libsdl2-dev
 #
-# The vendor/imgui submodule is fetched automatically if absent.
-# To add it once:
-#   git submodule add https://github.com/ocornut/imgui.git lib/imgui/vendor/imgui
-#   git submodule update --init lib/imgui/vendor/imgui
+# The vendor/imgui directory is fetched automatically if absent.
 
 set -euo pipefail
 
