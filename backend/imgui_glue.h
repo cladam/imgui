@@ -129,6 +129,25 @@ int hk_gui_begin_panel(const char* label);
  * Must be called only when hk_gui_begin_panel returned 1. */
 void hk_gui_end_panel(void);
 
+/* Display a radio button.  active=1 means the button appears selected.
+ * Returns 1 on the frame it is clicked (caller should update the selection). */
+int hk_gui_radio_button(const char* label, int active);
+
+/* Display a selectable row.  Manages its own selected state.
+ * selected : initial/current selected state (0 or 1).
+ * Returns the current selected state (toggles on click). */
+int hk_gui_selectable(const char* label, int selected);
+
+/* Display a combo/dropdown.  Manages its own state keyed by label.
+ * items      : newline-separated list of item strings.
+ * def_index  : initial selected index.
+ * Returns the currently selected index. */
+int hk_gui_combo(const char* label, const char* items, int def_index);
+
+/* Display a progress bar filled to fraction (0.0–1.0).
+ * overlay : text drawn over the bar; pass NULL for the default "XX%" label. */
+void hk_gui_progress_bar(double fraction, const char* overlay);
+
 #ifdef __cplusplus
 }
 #endif

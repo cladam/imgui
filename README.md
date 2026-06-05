@@ -125,6 +125,10 @@ All widgets must be called between `gui_begin_frame()` and `gui_end_frame()` —
 | `gui_input_text` | `(label: string, capacity: int) -> string` | Single-line text input; returns current content |
 | `gui_input_int` | `(label: string, default: int) -> int` | Integer input field with +/- buttons |
 | `gui_input_float` | `(label: string, default: float) -> float` | Float input field |
+| `gui_radio_button` | `(label: string, active: bool) -> bool` | Radio button; returns `true` when clicked (caller manages which is selected) |
+| `gui_selectable` | `(label: string, selected: bool) -> bool` | Clickable row; returns current selected state (widget owns state) |
+| `gui_combo` | `(label: string, items: string, default: int) -> int` | Dropdown; `items` is newline-separated (`"A\nB\nC"`); returns selected index |
+| `gui_progress_bar` | `(fraction: float, overlay: string) -> ()` | Horizontal bar filled 0.0–1.0; `overlay=""` shows default `XX%` label |
 
 ### Layout helpers
 

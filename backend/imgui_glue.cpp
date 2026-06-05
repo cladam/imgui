@@ -122,6 +122,9 @@ static char* text_state(const char* label, int capacity) {
     return nullptr;
 }
 
+/* --- combo/dropdown state (selected index) --- */
+/* Reuses the int state table — combo current-item is just an int. */
+
 /* ---------------------------------------------------------------------------
  * Ilseon theme — OLED-focused dark palette, Inter font
  *
@@ -442,7 +445,28 @@ int hk_gui_begin_panel(const char* label) {
 
 void hk_gui_end_panel(void) {
     /* CollapsingHeader is a single widget — no explicit End call needed.
-     * This function exists so the hica API is symmetric (begin/end pairs)
-     * and the Koka layer can enforce correct usage at compile time.
-     * It intentionally does nothing. */
+     * hk_gui_end_panel exists so the hica API is symmetric. */
+}
+
+int hk_gui_radio_button(const char* label, int active) {
+    return ImGui::RadioButton(label, active != 0) ? 1 : 0;
+}
+
+int hk_gui_selectable(const char* label, int selected) {
+    bool* v = bool_state(label, selected != 0);
+    if (!v) return selected;
+    ImGui::Selectable(label, v);
+    return *v ? 1 : 0;
+}
+
+int hk_gui_combo(const char* label, const char* items, int def_index) {
+    int* v = int_state(label, def_index);
+    if (!v) return def_index;
+    ImGui::Combo(label, v, items);
+    return *v;
+}
+
+void hk_gui_progress_bar(double fraction, const char* overlay) {
+    /* ImVec2(-1,0) = fill available width; overlay NULL uses default "XX%" */
+    ImGui::ProgressBar((float)fraction, ImVec2(-1.0f, 0.0f), overlay);
 }

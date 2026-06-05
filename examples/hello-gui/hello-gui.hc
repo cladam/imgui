@@ -1,12 +1,14 @@
 // hello-gui.hc — hica Dear ImGui demo
 //
 // Demonstrates the widget set:
-//   Text:    gui_text, gui_text_colored, gui_text_wrapped, gui_bullet_text
-//   Input:   gui_button, gui_checkbox, gui_input_text, gui_input_int, gui_input_float
-//   Sliders: gui_slider_int, gui_slider_float, gui_drag_int, gui_drag_float
-//   Layout:  gui_separator, gui_same_line, gui_spacing, gui_new_line,
-//            gui_dummy, gui_indent, gui_unindent
-//   Panel:   gui_begin_panel / gui_end_panel
+//   Text:      gui_text, gui_text_colored, gui_text_wrapped, gui_bullet_text
+//   Input:     gui_button, gui_checkbox, gui_input_text, gui_input_int, gui_input_float
+//   Sliders:   gui_slider_int, gui_slider_float, gui_drag_int, gui_drag_float
+//   Selection: gui_radio_button, gui_selectable, gui_combo
+//   Display:   gui_progress_bar
+//   Layout:    gui_separator, gui_same_line, gui_spacing, gui_new_line,
+//              gui_dummy, gui_indent, gui_unindent
+//   Panel:     gui_begin_panel / gui_end_panel
 //
 // Build and run (from repo root):
 //   ./build.sh                         # build libimgui_hica.a (once)
@@ -29,6 +31,10 @@ fun main() {
   var name    = ""
   var age     = 25
   var rate    = 1.0
+
+  // --- selection section ---
+  var choice  = 0      // radio: 0=Alpha 1=Beta 2=Gamma
+  var fruit   = 0      // combo index
 
   gui_window("hica -- Dear ImGui demo", 560, 620, () => {
     // ── Header ────────────────────────────────────────────────────────────
@@ -80,6 +86,29 @@ fun main() {
         gui_spacing()
         gui_text("Hello, " + name + "! Age: " + show(age))
       }
+      gui_end_panel()
+    }
+
+    // ── Selection ─────────────────────────────────────────────────────────
+    if gui_begin_panel("Selection") {
+      gui_text("Radio buttons (caller owns state):")
+      if gui_radio_button("Alpha", choice == 0) { choice = 0 }
+      gui_same_line()
+      if gui_radio_button("Beta",  choice == 1) { choice = 1 }
+      gui_same_line()
+      if gui_radio_button("Gamma", choice == 2) { choice = 2 }
+      gui_spacing()
+
+      gui_text("Selectable rows (widget owns state):")
+      gui_selectable("Option A", false)
+      gui_selectable("Option B", false)
+      gui_selectable("Option C", false)
+      gui_spacing()
+
+      fruit = gui_combo("Fruit", "Apple\nBanana\nCherry\nDurian", fruit)
+      gui_spacing()
+
+      gui_progress_bar(volume.float / 100.0, "")
       gui_end_panel()
     }
 

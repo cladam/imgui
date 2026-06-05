@@ -5,6 +5,8 @@ import std/num/float64
 
 import imgui_ffi
 
+import imgui_ffi
+
 fun hc-assert( b : bool ) : exn ()
   if !b then throw("assertion failed")
 

@@ -55,6 +55,10 @@ void        hk_gui_indent(void);
 void        hk_gui_unindent(void);
 int         hk_gui_begin_panel(const char* label);
 void        hk_gui_end_panel(void);
+int         hk_gui_radio_button(const char* label, int active);
+int         hk_gui_selectable(const char* label, int selected);
+int         hk_gui_combo(const char* label, const char* items, int def_index);
+void        hk_gui_progress_bar(double fraction, const char* overlay);
 
 /* ---------------------------------------------------------------------------
  * Lifecycle
@@ -250,5 +254,41 @@ static bool kk_hk_gui_begin_panel(kk_string_t label, kk_context_t* ctx) {
 
 static kk_unit_t kk_hk_gui_end_panel(kk_context_t* ctx) {
     hk_gui_end_panel();
+    return kk_Unit;
+}
+
+static bool kk_hk_gui_radio_button(kk_string_t label, bool active,
+                                    kk_context_t* ctx) {
+    const char* lbl = kk_string_cbuf_borrow(label, NULL, ctx);
+    int r = hk_gui_radio_button(lbl, active ? 1 : 0);
+    kk_string_drop(label, ctx);
+    return r != 0;
+}
+
+static bool kk_hk_gui_selectable(kk_string_t label, bool selected,
+                                  kk_context_t* ctx) {
+    const char* lbl = kk_string_cbuf_borrow(label, NULL, ctx);
+    int r = hk_gui_selectable(lbl, selected ? 1 : 0);
+    kk_string_drop(label, ctx);
+    return r != 0;
+}
+
+static kk_integer_t kk_hk_gui_combo(kk_string_t label, kk_string_t items,
+                                     kk_integer_t def_index,
+                                     kk_context_t* ctx) {
+    const char* lbl  = kk_string_cbuf_borrow(label, NULL, ctx);
+    const char* itms = kk_string_cbuf_borrow(items, NULL, ctx);
+    int r = hk_gui_combo(lbl, itms, kk_integer_clamp32(def_index, ctx));
+    kk_string_drop(label, ctx);
+    kk_string_drop(items, ctx);
+    return kk_integer_from_int(r, ctx);
+}
+
+static kk_unit_t kk_hk_gui_progress_bar(double fraction, kk_string_t overlay,
+                                         kk_context_t* ctx) {
+    const char* ov = kk_string_cbuf_borrow(overlay, NULL, ctx);
+    /* Empty string means no overlay label — pass NULL so ImGui shows the default % */
+    hk_gui_progress_bar(fraction, ov[0] != '\0' ? ov : NULL);
+    kk_string_drop(overlay, ctx);
     return kk_Unit;
 }
