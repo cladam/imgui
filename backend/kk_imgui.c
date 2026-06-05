@@ -42,6 +42,10 @@ int         hk_gui_checkbox(const char* label, int def);
 int         hk_gui_slider_int(const char* label, int min, int max, int def);
 double      hk_gui_slider_float(const char* label, double min, double max, double def);
 const char* hk_gui_input_text(const char* label, int capacity);
+int         hk_gui_input_int(const char* label, int def);
+double      hk_gui_input_float(const char* label, double def);
+int         hk_gui_drag_int(const char* label, int min, int max, int def, double speed);
+double      hk_gui_drag_float(const char* label, double min, double max, double def, double speed);
 void        hk_gui_separator(void);
 void        hk_gui_same_line(void);
 void        hk_gui_spacing(void);
@@ -160,6 +164,46 @@ static kk_string_t kk_hk_gui_input_text(kk_string_t label, kk_integer_t capacity
     char* sbuf = (char*)kk_malloc(slen + 1, ctx);
     memcpy(sbuf, result, slen + 1);
     return kk_string_alloc_raw_len(slen, sbuf, true, ctx);
+}
+
+static kk_integer_t kk_hk_gui_input_int(kk_string_t label, kk_integer_t def,
+                                         kk_context_t* ctx) {
+    const char* lbl = kk_string_cbuf_borrow(label, NULL, ctx);
+    int r = hk_gui_input_int(lbl, kk_integer_clamp32(def, ctx));
+    kk_string_drop(label, ctx);
+    return kk_integer_from_int(r, ctx);
+}
+
+static double kk_hk_gui_input_float(kk_string_t label, double def,
+                                     kk_context_t* ctx) {
+    const char* lbl = kk_string_cbuf_borrow(label, NULL, ctx);
+    double r = hk_gui_input_float(lbl, def);
+    kk_string_drop(label, ctx);
+    return r;
+}
+
+static kk_integer_t kk_hk_gui_drag_int(kk_string_t label,
+                                        kk_integer_t min_val, kk_integer_t max_val,
+                                        kk_integer_t def_val, double speed,
+                                        kk_context_t* ctx) {
+    const char* lbl = kk_string_cbuf_borrow(label, NULL, ctx);
+    int r = hk_gui_drag_int(lbl,
+                             kk_integer_clamp32(min_val, ctx),
+                             kk_integer_clamp32(max_val, ctx),
+                             kk_integer_clamp32(def_val, ctx),
+                             speed);
+    kk_string_drop(label, ctx);
+    return kk_integer_from_int(r, ctx);
+}
+
+static double kk_hk_gui_drag_float(kk_string_t label,
+                                    double min_val, double max_val,
+                                    double def_val, double speed,
+                                    kk_context_t* ctx) {
+    const char* lbl = kk_string_cbuf_borrow(label, NULL, ctx);
+    double r = hk_gui_drag_float(lbl, min_val, max_val, def_val, speed);
+    kk_string_drop(label, ctx);
+    return r;
 }
 
 static kk_unit_t kk_hk_gui_separator(kk_context_t* ctx) {

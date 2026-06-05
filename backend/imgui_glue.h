@@ -83,6 +83,22 @@ double hk_gui_slider_float(const char* label, double min, double max, double def
  * with the same label). */
 const char* hk_gui_input_text(const char* label, int capacity);
 
+/* Display an integer input field with +/- step buttons.
+ * def : initial value.  Returns the current value. */
+int hk_gui_input_int(const char* label, int def);
+
+/* Display a float input field.
+ * def : initial value (as double for FFI convenience).  Returns current value. */
+double hk_gui_input_float(const char* label, double def);
+
+/* Display a click-drag integer control in [min, max].
+ * speed : change per pixel of drag (e.g. 1.0).  Returns current value. */
+int hk_gui_drag_int(const char* label, int min, int max, int def, double speed);
+
+/* Display a click-drag float control in [min, max].
+ * speed : change per pixel of drag (e.g. 0.01).  Returns current value. */
+double hk_gui_drag_float(const char* label, double min, double max, double def, double speed);
+
 /* Horizontal separator rule. */
 void hk_gui_separator(void);
 

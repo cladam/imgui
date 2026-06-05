@@ -120,7 +120,11 @@ All widgets must be called between `gui_begin_frame()` and `gui_end_frame()` —
 | `gui_checkbox` | `(label: string, checked: bool) -> bool` | Toggle; returns current state |
 | `gui_slider_int` | `(label: string, min: int, max: int, default: int) -> int` | Integer slider; returns current value |
 | `gui_slider_float` | `(label: string, min: float, max: float, default: float) -> float` | Float slider; returns current value |
+| `gui_drag_int` | `(label: string, min: int, max: int, default: int, speed: float) -> int` | Click-drag int control; `speed` ≈ change per pixel |
+| `gui_drag_float` | `(label: string, min: float, max: float, default: float, speed: float) -> float` | Click-drag float control |
 | `gui_input_text` | `(label: string, capacity: int) -> string` | Single-line text input; returns current content |
+| `gui_input_int` | `(label: string, default: int) -> int` | Integer input field with +/- buttons |
+| `gui_input_float` | `(label: string, default: float) -> float` | Float input field |
 
 ### Layout helpers
 

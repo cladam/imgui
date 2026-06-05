@@ -75,6 +75,18 @@ pub extern gui_slider_float( label : string, min_val : float64, max_val : float6
 pub extern gui_input_text( label : string, capacity : int ) : io string
   c "kk_hk_gui_input_text"
 
+pub extern gui_input_int( label : string, def_val : int ) : io int
+  c "kk_hk_gui_input_int"
+
+pub extern gui_input_float( label : string, def_val : float64 ) : io float64
+  c "kk_hk_gui_input_float"
+
+pub extern gui_drag_int( label : string, min_val : int, max_val : int, def_val : int, speed : float64 ) : io int
+  c "kk_hk_gui_drag_int"
+
+pub extern gui_drag_float( label : string, min_val : float64, max_val : float64, def_val : float64, speed : float64 ) : io float64
+  c "kk_hk_gui_drag_float"
+
 pub extern gui_separator() : io ()
   c "kk_hk_gui_separator"
 

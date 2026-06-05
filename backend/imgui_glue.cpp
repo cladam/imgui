@@ -400,6 +400,34 @@ const char* hk_gui_input_text(const char* label, int capacity) {
     return buf;
 }
 
+int hk_gui_input_int(const char* label, int def) {
+    int* v = int_state(label, def);
+    if (!v) return def;
+    ImGui::InputInt(label, v);
+    return *v;
+}
+
+double hk_gui_input_float(const char* label, double def) {
+    float* v = float_state(label, (float)def);
+    if (!v) return def;
+    ImGui::InputFloat(label, v);
+    return (double)*v;
+}
+
+int hk_gui_drag_int(const char* label, int min, int max, int def, double speed) {
+    int* v = int_state(label, def);
+    if (!v) return def;
+    ImGui::DragInt(label, v, (float)speed, min, max);
+    return *v;
+}
+
+double hk_gui_drag_float(const char* label, double min, double max, double def, double speed) {
+    float* v = float_state(label, (float)def);
+    if (!v) return def;
+    ImGui::DragFloat(label, v, (float)speed, (float)min, (float)max);
+    return (double)*v;
+}
+
 void hk_gui_separator(void) { ImGui::Separator(); }
 void hk_gui_same_line(void) { ImGui::SameLine(); }
 void hk_gui_spacing(void)   { ImGui::Spacing(); }
