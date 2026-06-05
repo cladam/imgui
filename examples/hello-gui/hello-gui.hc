@@ -116,11 +116,11 @@ fun main() {
     if gui_begin_panel("Layout helpers") {
       gui_text("Three buttons on one line:")
       gui_spacing()
-      if gui_button("Alpha")   { }
+      if gui_button("One")   { }
       gui_same_line()
-      if gui_button("Beta")    { }
+      if gui_button("Two")   { }
       gui_same_line()
-      if gui_button("Gamma")   { }
+      if gui_button("Three") { }
       gui_new_line()
       gui_dummy(0.0, 6.0)
       gui_indent()
