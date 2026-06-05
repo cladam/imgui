@@ -4,14 +4,14 @@ A Dear ImGui binding for [hica](https://github.com/cladam/hica). Immediate-mode 
 
 ## Installation
 
-### Option A — pre-built binary (recommended)
+### Option A: pre-built binary (recommended)
 
 No C++ compiler or ImGui source needed. Only SDL2 must be installed on the machine.
 
 ```sh
 # 1. Install SDL2
 brew install sdl2                          # macOS
-# sudo apt install libsdl2-dev            # Linux
+# sudo apt install libsdl2-dev             # Linux
 
 # 2. Add this repo as a submodule (brings imgui.kk + the C trampoline)
 git submodule add https://github.com/cladam/imgui.git lib/imgui
@@ -44,7 +44,7 @@ Import the library from your `.hc` file:
 extern import "./lib/imgui/src/imgui"
 ```
 
-Configure the linker in your `hica.hml`. The SDL2 lib path depends on where SDL2 is installed — use `sdl2-config --libs` to find it:
+Configure the linker in your `hica.hml`. The SDL2 lib path depends on where SDL2 is installed, use `sdl2-config --libs` to find it:
 
 ```sh
 sdl2-config --libs
@@ -140,7 +140,7 @@ if gui_begin_panel("Settings") {
 
 ### Widget state
 
-Sliders, checkboxes, and text inputs manage their own persistent state keyed by label string. Read the return value each frame to get the current value — hica `var` bindings work naturally:
+Sliders, checkboxes, and text inputs manage their own persistent state keyed by label string. Read the return value each frame to get the current value, the hica `var` bindings work naturally:
 
 ```rust
 var volume = 80
@@ -191,7 +191,7 @@ cd lib/imgui
 ./build.sh
 ```
 
-This compiles Dear ImGui, the SDL2 + OpenGL3 backends, the C glue layer, and archives everything into `lib/libimgui_hica.a`. The Inter font and Ilseon theme are baked in — no runtime assets needed.
+This compiles Dear ImGui, the SDL2 + OpenGL3 backends, the C glue layer, and archives everything into `lib/libimgui_hica.a`. The Inter font and Ilseon theme are baked in – no runtime assets needed.
 
 ## Theme and font
 
