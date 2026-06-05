@@ -51,6 +51,15 @@ pub extern gui_shutdown() : io ()
 pub extern gui_text( s : string ) : io ()
   c "kk_hk_gui_text"
 
+pub extern gui_text_colored( s : string, r : float64, g : float64, b : float64, a : float64 ) : io ()
+  c "kk_hk_gui_text_colored"
+
+pub extern gui_text_wrapped( s : string ) : io ()
+  c "kk_hk_gui_text_wrapped"
+
+pub extern gui_bullet_text( s : string ) : io ()
+  c "kk_hk_gui_bullet_text"
+
 pub extern gui_button( label : string ) : io bool
   c "kk_hk_gui_button"
 
@@ -74,6 +83,18 @@ pub extern gui_same_line() : io ()
 
 pub extern gui_spacing() : io ()
   c "kk_hk_gui_spacing"
+
+pub extern gui_new_line() : io ()
+  c "kk_hk_gui_new_line"
+
+pub extern gui_dummy( w : float64, h : float64 ) : io ()
+  c "kk_hk_gui_dummy"
+
+pub extern gui_indent() : io ()
+  c "kk_hk_gui_indent"
+
+pub extern gui_unindent() : io ()
+  c "kk_hk_gui_unindent"
 
 pub extern gui_begin_panel( label : string ) : io bool
   c "kk_hk_gui_begin_panel"

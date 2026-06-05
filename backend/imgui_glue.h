@@ -51,6 +51,15 @@ void hk_gui_shutdown(void);
 /* Display a text label. */
 void hk_gui_text(const char* s);
 
+/* Display a text label in the given RGBA colour (each channel 0.0–1.0). */
+void hk_gui_text_colored(const char* s, double r, double g, double b, double a);
+
+/* Display text that wraps at the window/column edge. */
+void hk_gui_text_wrapped(const char* s);
+
+/* Display a bullet point followed by text. */
+void hk_gui_bullet_text(const char* s);
+
 /* Display a button.  Returns 1 on the frame it was clicked, 0 otherwise. */
 int hk_gui_button(const char* label);
 
@@ -82,6 +91,18 @@ void hk_gui_same_line(void);
 
 /* Extra vertical spacing. */
 void hk_gui_spacing(void);
+
+/* Undo a SameLine — move back to the start of the next line. */
+void hk_gui_new_line(void);
+
+/* Invisible widget of the given size in pixels; useful as a spacer. */
+void hk_gui_dummy(double w, double h);
+
+/* Push indent (moves subsequent widgets right by one level). */
+void hk_gui_indent(void);
+
+/* Pop indent. */
+void hk_gui_unindent(void);
 
 /* Collapsible section header.
  * Returns 1 if the section is expanded (caller should render children and

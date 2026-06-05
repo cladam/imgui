@@ -111,16 +111,28 @@ fun main() {
 All widgets must be called between `gui_begin_frame()` and `gui_end_frame()` — or inside the `gui_window` lambda.
 
 | Function | Signature | Purpose |
-|----------|-----------|---------|
+|----------|-----------|------|
 | `gui_text` | `(s: string) -> ()` | Static text label |
+| `gui_text_colored` | `(s: string, r: float, g: float, b: float, a: float) -> ()` | Text in an RGBA colour (channels 0.0–1.0) |
+| `gui_text_wrapped` | `(s: string) -> ()` | Text that wraps at the window edge |
+| `gui_bullet_text` | `(s: string) -> ()` | Bullet point + text |
 | `gui_button` | `(label: string) -> bool` | Button; returns `true` on the click frame |
 | `gui_checkbox` | `(label: string, checked: bool) -> bool` | Toggle; returns current state |
 | `gui_slider_int` | `(label: string, min: int, max: int, default: int) -> int` | Integer slider; returns current value |
 | `gui_slider_float` | `(label: string, min: float, max: float, default: float) -> float` | Float slider; returns current value |
 | `gui_input_text` | `(label: string, capacity: int) -> string` | Single-line text input; returns current content |
+
+### Layout helpers
+
+| Function | Signature | Purpose |
+|----------|-----------|------|
 | `gui_separator` | `() -> ()` | Horizontal rule |
 | `gui_same_line` | `() -> ()` | Place next widget on the same line |
+| `gui_new_line` | `() -> ()` | Undo a `same_line`; move to the next line |
 | `gui_spacing` | `() -> ()` | Extra vertical gap |
+| `gui_dummy` | `(w: float, h: float) -> ()` | Invisible spacer of exact pixel size |
+| `gui_indent` | `() -> ()` | Push indent (shift subsequent widgets right) |
+| `gui_unindent` | `() -> ()` | Pop indent |
 
 ### Panels
 
@@ -198,7 +210,7 @@ This compiles Dear ImGui, the SDL2 + OpenGL3 backends, the C glue layer, and arc
 The bundled defaults are:
 
 - **Font**: [Inter](https://rsms.me/inter/) Regular 16px, HiDPI-aware (scales with display pixel density)
-- **Theme**: Ilseon — an OLED-focused dark palette with organic muted accents, sourced from the [hica standard library](https://github.com/cladam/hica/blob/main/stdlib/std/term.hc)
+- **Theme**: Ilseon, an OLED-focused dark palette with organic muted accents, sourced from the [hica standard library](https://github.com/cladam/hica/blob/main/stdlib/std/term.hc)
 
 ## Project structure
 

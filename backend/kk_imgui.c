@@ -34,6 +34,9 @@ int         hk_gui_begin_frame(void);
 void        hk_gui_end_frame(void);
 void        hk_gui_shutdown(void);
 void        hk_gui_text(const char* s);
+void        hk_gui_text_colored(const char* s, double r, double g, double b, double a);
+void        hk_gui_text_wrapped(const char* s);
+void        hk_gui_bullet_text(const char* s);
 int         hk_gui_button(const char* label);
 int         hk_gui_checkbox(const char* label, int def);
 int         hk_gui_slider_int(const char* label, int min, int max, int def);
@@ -42,6 +45,10 @@ const char* hk_gui_input_text(const char* label, int capacity);
 void        hk_gui_separator(void);
 void        hk_gui_same_line(void);
 void        hk_gui_spacing(void);
+void        hk_gui_new_line(void);
+void        hk_gui_dummy(double w, double h);
+void        hk_gui_indent(void);
+void        hk_gui_unindent(void);
 int         hk_gui_begin_panel(const char* label);
 void        hk_gui_end_panel(void);
 
@@ -78,6 +85,29 @@ static kk_unit_t kk_hk_gui_shutdown(kk_context_t* ctx) {
 static kk_unit_t kk_hk_gui_text(kk_string_t s, kk_context_t* ctx) {
     const char* cs = kk_string_cbuf_borrow(s, NULL, ctx);
     hk_gui_text(cs);
+    kk_string_drop(s, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_text_colored(kk_string_t s,
+                                         double r, double g, double b, double a,
+                                         kk_context_t* ctx) {
+    const char* cs = kk_string_cbuf_borrow(s, NULL, ctx);
+    hk_gui_text_colored(cs, r, g, b, a);
+    kk_string_drop(s, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_text_wrapped(kk_string_t s, kk_context_t* ctx) {
+    const char* cs = kk_string_cbuf_borrow(s, NULL, ctx);
+    hk_gui_text_wrapped(cs);
+    kk_string_drop(s, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_bullet_text(kk_string_t s, kk_context_t* ctx) {
+    const char* cs = kk_string_cbuf_borrow(s, NULL, ctx);
+    hk_gui_bullet_text(cs);
     kk_string_drop(s, ctx);
     return kk_Unit;
 }
@@ -144,6 +174,26 @@ static kk_unit_t kk_hk_gui_same_line(kk_context_t* ctx) {
 
 static kk_unit_t kk_hk_gui_spacing(kk_context_t* ctx) {
     hk_gui_spacing();
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_new_line(kk_context_t* ctx) {
+    hk_gui_new_line();
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_dummy(double w, double h, kk_context_t* ctx) {
+    hk_gui_dummy(w, h);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_indent(kk_context_t* ctx) {
+    hk_gui_indent();
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_unindent(kk_context_t* ctx) {
+    hk_gui_unindent();
     return kk_Unit;
 }
 

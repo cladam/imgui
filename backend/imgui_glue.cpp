@@ -355,6 +355,18 @@ void hk_gui_text(const char* s) {
     ImGui::TextUnformatted(s);
 }
 
+void hk_gui_text_colored(const char* s, double r, double g, double b, double a) {
+    ImGui::TextColored(ImVec4((float)r, (float)g, (float)b, (float)a), "%s", s);
+}
+
+void hk_gui_text_wrapped(const char* s) {
+    ImGui::TextWrapped("%s", s);
+}
+
+void hk_gui_bullet_text(const char* s) {
+    ImGui::BulletText("%s", s);
+}
+
 int hk_gui_button(const char* label) {
     return ImGui::Button(label) ? 1 : 0;
 }
@@ -391,6 +403,10 @@ const char* hk_gui_input_text(const char* label, int capacity) {
 void hk_gui_separator(void) { ImGui::Separator(); }
 void hk_gui_same_line(void) { ImGui::SameLine(); }
 void hk_gui_spacing(void)   { ImGui::Spacing(); }
+void hk_gui_new_line(void)  { ImGui::NewLine(); }
+void hk_gui_dummy(double w, double h) { ImGui::Dummy(ImVec2((float)w, (float)h)); }
+void hk_gui_indent(void)    { ImGui::Indent(); }
+void hk_gui_unindent(void)  { ImGui::Unindent(); }
 
 int hk_gui_begin_panel(const char* label) {
     return ImGui::CollapsingHeader(label) ? 1 : 0;
