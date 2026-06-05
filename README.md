@@ -4,29 +4,69 @@ A Dear ImGui binding for [hica](https://github.com/cladam/hica). Immediate-mode 
 
 ## Installation
 
-Add as a git submodule to your hica project:
+### Option A — pre-built binary (recommended)
+
+No C++ compiler or ImGui source needed. Only SDL2 must be installed on the machine.
+
+```sh
+# 1. Install SDL2
+brew install sdl2                          # macOS
+# sudo apt install libsdl2-dev            # Linux
+
+# 2. Add this repo as a submodule (brings imgui.kk + the C trampoline)
+git submodule add https://github.com/cladam/imgui.git lib/imgui
+
+# 3. Download the pre-built .a for your platform from:
+#    https://github.com/cladam/imgui/releases/latest
+mkdir -p lib/imgui/lib
+
+# macOS Apple Silicon:
+curl -L https://github.com/cladam/imgui/releases/latest/download/libimgui_hica-macos-arm64.a \
+     -o lib/imgui/lib/libimgui_hica.a
+
+# Linux x86-64:
+# curl -L https://github.com/cladam/imgui/releases/latest/download/libimgui_hica-linux-x86_64.a \
+#      -o lib/imgui/lib/libimgui_hica.a
+```
+
+### Option B — build from source
 
 ```sh
 git submodule add https://github.com/cladam/imgui.git lib/imgui
-cd lib/imgui && ./build.sh
+cd lib/imgui && ./build.sh   # requires clang++ and SDL2 dev headers
 ```
 
-Then import the library from your `.hc` file:
+### Common: import and link
+
+Import the library from your `.hc` file:
 
 ```rust
 extern import "./lib/imgui/src/imgui"
 ```
 
-And configure the linker in your `hica.hml`:
+Configure the linker in your `hica.hml`. The SDL2 lib path depends on where SDL2 is installed — use `sdl2-config --libs` to find it:
 
+```sh
+sdl2-config --libs
+# macOS Apple Silicon → -L/opt/homebrew/opt/sdl2/lib -lSDL2
+# Linux               → -L/usr/lib/x86_64-linux-gnu -lSDL2
+```
+
+**macOS:**
 ```hml
 @koka {
     include: "./lib/imgui/src"
-    flags: "--cclinkopts=-L./lib/imgui/lib --cclib=imgui_hica --cclib=SDL2 --cclinkopts=-lc++ --cclinkopts=-framework --cclinkopts=OpenGL"
+    flags: "--cclinkopts=-L./lib/imgui/lib --cclinkopts=-L/opt/homebrew/opt/sdl2/lib --cclib=imgui_hica --cclib=SDL2 --cclinkopts=-lc++ --cclinkopts=-framework --cclinkopts=OpenGL"
 }
 ```
 
-On Linux, replace `-framework OpenGL` with `--cclib=GL`.
+**Linux:**
+```hml
+@koka {
+    include: "./lib/imgui/src"
+    flags: "--cclinkopts=-L./lib/imgui/lib --cclib=imgui_hica --cclib=SDL2 --cclib=GL"
+}
+```
 
 ## Quick start
 
@@ -117,7 +157,12 @@ gui_window("Player", 400, 200, () => {
 
 ## Examples
 
-See [examples/hello-gui](https://github.com/cladam/hica/tree/main/examples/hello-gui) in the hica repo for a full demo using all Phase 1 widgets.
+See [examples/hello-gui](examples/hello-gui/hello-gui.hc) in this repo for a full demo. Build and run:
+
+```sh
+./build.sh                                # build libimgui_hica.a (once)
+hica run examples/hello-gui/hello-gui.hc
+```
 
 ```sh
 cd examples/hello-gui
