@@ -2,17 +2,23 @@
 // Usage:
 //   1. Copy this file into your project
 //   2. Adjust the import path below
-//   3. Call apply_theme() at the TOP of your gui_window callback (not before it)
-//      ImGui needs an active context, which gui_window creates before the callback runs.
+//   3. Call apply_theme() at the TOP of your gui_window callback,
+//      not before gui_window() -- ImGui context must exist first.
 
 import "../../src/imgui"
 
 pub fun apply_theme() {
-  gui_set_color_text(0.90499997138977051, 0.65499997138977051, 0.67500001192092896)
-  gui_set_color_bg(0.28200000524520874, 0.31000000238418579, 0.36800000071525574)
-  gui_set_color_surface(0.44299998879432678, 0.50599998235702515, 0.54600000381469727)
-  gui_set_color_border(0.29600000381469727, 0.29600000381469727, 0.51700001955032349)
-  gui_set_color_accent(0.30500000715255737, 0.3190000057220459, 0.31299999356269836)
+  gui_set_color_text(0.11799999999999999, 0.161, 0.23100000000000001)
+  gui_set_color_bg(0.90200000000000002, 0.91400000000000003, 0.93300000000000005)
+  gui_set_color_surface(0.97299999999999998, 0.97599999999999998, 0.97999999999999998)
+  gui_set_color_border(0.88600000000000001, 0.91000000000000003, 0.94099999999999995)
+  gui_set_color_accent(0.31, 0.27500000000000002, 0.89800000000000002)
+  gui_set_color_plot(0.031, 0.56899999999999995, 0.69799999999999995)
+  gui_set_color_plot_bar(0.91800000000000004, 0.34499999999999997, 0.047)
+  gui_set_color_modal_dim(0.20)
   gui_set_style_rounding(8.0, 5.0, 5.0)
   gui_set_style_padding(10.0, 5.0)
+  gui_set_style_window_padding(14.0, 12.0)
+  gui_set_style_spacing(8.0, 6.0, 18.0)
+  gui_set_style_borders(1.0, 0.0)
 }

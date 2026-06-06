@@ -14,6 +14,23 @@
 
 import "../../src/imgui"
 
+// Format a float for theme export: always include decimal point.
+fun fmt_f(v: float) : string {
+  let s = show_fixed(v, 4)
+  // strip trailing zeros after decimal, but keep at least one decimal place
+  let trimmed = if contains(s, ".") {
+    let t = s
+    let t2 = if ends_with(t, "0000") { t[:str_length(t) - 4] } else { t }
+    let t3 = if ends_with(t2, "000")  { t2[:str_length(t2) - 3] } else { t2 }
+    let t4 = if ends_with(t3, "00")   { t3[:str_length(t3) - 2] } else { t3 }
+    let t5 = if ends_with(t4, "0") && !ends_with(t4, ".0") { t4[:str_length(t4) - 1] } else { t4 }
+    t5
+  } else {
+    s + ".0"
+  }
+  if ends_with(trimmed, ".") { trimmed + "0" } else { trimmed }
+}
+
 // Build the exported .hc source as a string.
 fun generate_theme(
   rt: float, gt: float, bt: float,
@@ -40,19 +57,19 @@ fun generate_theme(
   "import \"../../src/imgui\"\n" +
   "\n" +
   "pub fun apply_theme() \{\n" +
-  "  gui_set_color_text("      + show(rt)  + ", " + show(gt)  + ", " + show(bt)  + ")\n" +
-  "  gui_set_color_bg("        + show(rb)  + ", " + show(gb)  + ", " + show(bb)  + ")\n" +
-  "  gui_set_color_surface("   + show(rs)  + ", " + show(gs)  + ", " + show(bs)  + ")\n" +
-  "  gui_set_color_border("    + show(ro)  + ", " + show(go)  + ", " + show(bo)  + ")\n" +
-  "  gui_set_color_accent("    + show(ra)  + ", " + show(ga)  + ", " + show(ba)  + ")\n" +
-  "  gui_set_color_plot("      + show(rp)  + ", " + show(gp)  + ", " + show(bp)  + ")\n" +
-  "  gui_set_color_plot_bar("  + show(rpb) + ", " + show(gpb) + ", " + show(bpb) + ")\n" +
-  "  gui_set_color_modal_dim(" + show(md)  + ")\n" +
-  "  gui_set_style_rounding("  + show(wr)  + ", " + show(fr)  + ", " + show(tr)  + ")\n" +
-  "  gui_set_style_padding("   + show(px)  + ", " + show(py)  + ")\n" +
-  "  gui_set_style_window_padding(" + show(wpx) + ", " + show(wpy) + ")\n" +
-  "  gui_set_style_spacing("   + show(isx) + ", " + show(isy) + ", " + show(ind) + ")\n" +
-  "  gui_set_style_borders("   + show(bws) + ", " + show(bfs) + ")\n" +
+  "  gui_set_color_text("      + fmt_f(rt)  + ", " + fmt_f(gt)  + ", " + fmt_f(bt)  + ")\n" +
+  "  gui_set_color_bg("        + fmt_f(rb)  + ", " + fmt_f(gb)  + ", " + fmt_f(bb)  + ")\n" +
+  "  gui_set_color_surface("   + fmt_f(rs)  + ", " + fmt_f(gs)  + ", " + fmt_f(bs)  + ")\n" +
+  "  gui_set_color_border("    + fmt_f(ro)  + ", " + fmt_f(go)  + ", " + fmt_f(bo)  + ")\n" +
+  "  gui_set_color_accent("    + fmt_f(ra)  + ", " + fmt_f(ga)  + ", " + fmt_f(ba)  + ")\n" +
+  "  gui_set_color_plot("      + fmt_f(rp)  + ", " + fmt_f(gp)  + ", " + fmt_f(bp)  + ")\n" +
+  "  gui_set_color_plot_bar("  + fmt_f(rpb) + ", " + fmt_f(gpb) + ", " + fmt_f(bpb) + ")\n" +
+  "  gui_set_color_modal_dim(" + fmt_f(md)  + ")\n" +
+  "  gui_set_style_rounding("  + fmt_f(wr)  + ", " + fmt_f(fr)  + ", " + fmt_f(tr)  + ")\n" +
+  "  gui_set_style_padding("   + fmt_f(px)  + ", " + fmt_f(py)  + ")\n" +
+  "  gui_set_style_window_padding(" + fmt_f(wpx) + ", " + fmt_f(wpy) + ")\n" +
+  "  gui_set_style_spacing("   + fmt_f(isx) + ", " + fmt_f(isy) + ", " + fmt_f(ind) + ")\n" +
+  "  gui_set_style_borders("   + fmt_f(bws) + ", " + fmt_f(bfs) + ")\n" +
   "\}\n"
 }
 
