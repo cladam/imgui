@@ -841,3 +841,46 @@ int hk_gui_color_button(const char* id, double r, double g, double b, double a,
 void hk_gui_set_clipboard(const char* text) {
     ImGui::SetClipboardText(text);
 }
+
+void hk_gui_set_color_plot(double r, double g, double b) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    float fr = (float)r, fg = (float)g, fb = (float)b;
+    float br = fr + 0.15f < 1.0f ? fr + 0.15f : 1.0f;
+    float bg_ = fg + 0.15f < 1.0f ? fg + 0.15f : 1.0f;
+    float bb = fb + 0.15f < 1.0f ? fb + 0.15f : 1.0f;
+    s.Colors[ImGuiCol_PlotLines]        = ImVec4(fr, fg, fb, 1.00f);
+    s.Colors[ImGuiCol_PlotLinesHovered] = ImVec4(br, bg_, bb, 1.00f);
+}
+
+void hk_gui_set_color_plot_bar(double r, double g, double b) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    float fr = (float)r, fg = (float)g, fb = (float)b;
+    float br = fr + 0.15f < 1.0f ? fr + 0.15f : 1.0f;
+    float bg_ = fg + 0.15f < 1.0f ? fg + 0.15f : 1.0f;
+    float bb = fb + 0.15f < 1.0f ? fb + 0.15f : 1.0f;
+    s.Colors[ImGuiCol_PlotHistogram]        = ImVec4(fr, fg, fb, 1.00f);
+    s.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(br, bg_, bb, 1.00f);
+}
+
+void hk_gui_set_color_modal_dim(double alpha) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    s.Colors[ImGuiCol_ModalWindowDimBg]  = ImVec4(0.0f, 0.0f, 0.0f, (float)alpha);
+    s.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.0f, 0.0f, 0.0f, (float)alpha * 0.5f);
+}
+
+void hk_gui_set_style_window_padding(double x, double y) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    s.WindowPadding = ImVec2((float)x, (float)y);
+}
+
+void hk_gui_set_style_spacing(double item_x, double item_y, double indent) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    s.ItemSpacing   = ImVec2((float)item_x, (float)item_y);
+    s.IndentSpacing = (float)indent;
+}
+
+void hk_gui_set_style_borders(double window, double frame) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    s.WindowBorderSize = (float)window;
+    s.FrameBorderSize  = (float)frame;
+}

@@ -214,3 +214,33 @@ pub fun gui_color_button(id: string, r: float, g: float, b: float, a: float, w: 
 pub fun gui_set_clipboard(text: string) {
   gui_raw_set_clipboard(text)
 }
+
+// Plot line color; hover variant is derived automatically.
+pub fun gui_set_color_plot(r: float, g: float, b: float) {
+  gui_raw_set_color_plot(r, g, b)
+}
+
+// Plot bar/histogram color; hover variant is derived automatically.
+pub fun gui_set_color_plot_bar(r: float, g: float, b: float) {
+  gui_raw_set_color_plot_bar(r, g, b)
+}
+
+// Modal and nav-windowing overlay dim opacity (0=transparent, 1=opaque).
+pub fun gui_set_color_modal_dim(alpha: float) {
+  gui_raw_set_color_modal_dim(alpha)
+}
+
+// Window content area padding in pixels.
+pub fun gui_set_style_window_padding(x: float, y: float) {
+  gui_raw_set_style_window_padding(x, y)
+}
+
+// Item spacing and tree-indent width in pixels.
+pub fun gui_set_style_spacing(item_x: float, item_y: float, indent: float) {
+  gui_raw_set_style_spacing(item_x, item_y, indent)
+}
+
+// Window and frame border thickness in pixels (0=none, 1=thin).
+pub fun gui_set_style_borders(window: float, frame: float) {
+  gui_raw_set_style_borders(window, frame)
+}

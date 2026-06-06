@@ -291,3 +291,27 @@ pub fun hc_gui_color_button(id : string, r : float64, g : float64, b : float64, 
 // .hc:208
 pub fun hc_gui_set_clipboard(text : string)
   gui_raw_set_clipboard(text)
+
+// .hc:210
+pub fun hc_gui_set_color_plot(r : float64, g : float64, b : float64)
+  gui_raw_set_color_plot(r, g, b)
+
+// .hc:218
+pub fun hc_gui_set_color_plot_bar(r : float64, g : float64, b : float64)
+  gui_raw_set_color_plot_bar(r, g, b)
+
+// .hc:223
+pub fun hc_gui_set_color_modal_dim(alpha : float64)
+  gui_raw_set_color_modal_dim(alpha)
+
+// .hc:225
+pub fun hc_gui_set_style_window_padding(x : float64, y : float64)
+  gui_raw_set_style_window_padding(x, y)
+
+// .hc:230
+pub fun hc_gui_set_style_spacing(item_x : float64, item_y : float64, indent : float64)
+  gui_raw_set_style_spacing(item_x, item_y, indent)
+
+// .hc:238
+pub fun hc_gui_set_style_borders(window : float64, frame : float64)
+  gui_raw_set_style_borders(window, frame)

@@ -319,6 +319,25 @@ int  hk_gui_color_button(const char* id, double r, double g, double b, double a,
 /* Copy text to the OS clipboard. */
 void hk_gui_set_clipboard(const char* text);
 
+/* Plot line color; hover variant is derived (15% brighter). */
+void hk_gui_set_color_plot(double r, double g, double b);
+
+/* Plot bar/histogram color; hover variant is derived (15% brighter). */
+void hk_gui_set_color_plot_bar(double r, double g, double b);
+
+/* Modal and nav-windowing overlay dim.  alpha=0 transparent, 1=opaque.
+ * NavWindowingDimBg is set to half this alpha. */
+void hk_gui_set_color_modal_dim(double alpha);
+
+/* Window content area padding (pixels). */
+void hk_gui_set_style_window_padding(double x, double y);
+
+/* Item spacing and tree-indent width (pixels). */
+void hk_gui_set_style_spacing(double item_x, double item_y, double indent);
+
+/* Window and frame border thickness in pixels (0 = none, 1 = thin). */
+void hk_gui_set_style_borders(double window, double frame);
+
 #ifdef __cplusplus
 }
 #endif

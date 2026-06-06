@@ -99,6 +99,12 @@ void        hk_gui_set_style_rounding(double window, double frame, double tab);
 void        hk_gui_set_style_padding(double frame_x, double frame_y);
 int         hk_gui_color_button(const char* id, double r, double g, double b, double a, double w, double h);
 void        hk_gui_set_clipboard(const char* text);
+void        hk_gui_set_color_plot(double r, double g, double b);
+void        hk_gui_set_color_plot_bar(double r, double g, double b);
+void        hk_gui_set_color_modal_dim(double alpha);
+void        hk_gui_set_style_window_padding(double x, double y);
+void        hk_gui_set_style_spacing(double item_x, double item_y, double indent);
+void        hk_gui_set_style_borders(double window, double frame);
 
 /* ---------------------------------------------------------------------------
  * Lifecycle
@@ -540,6 +546,24 @@ static kk_unit_t kk_hk_gui_set_clipboard(kk_string_t text, kk_context_t* ctx) {
     hk_gui_set_clipboard(t);
     kk_string_drop(text, ctx);
     return kk_Unit;
+}
+static kk_unit_t kk_hk_gui_set_color_plot(double r, double g, double b, kk_context_t* ctx) {
+    hk_gui_set_color_plot(r, g, b); return kk_Unit;
+}
+static kk_unit_t kk_hk_gui_set_color_plot_bar(double r, double g, double b, kk_context_t* ctx) {
+    hk_gui_set_color_plot_bar(r, g, b); return kk_Unit;
+}
+static kk_unit_t kk_hk_gui_set_color_modal_dim(double alpha, kk_context_t* ctx) {
+    hk_gui_set_color_modal_dim(alpha); return kk_Unit;
+}
+static kk_unit_t kk_hk_gui_set_style_window_padding(double x, double y, kk_context_t* ctx) {
+    hk_gui_set_style_window_padding(x, y); return kk_Unit;
+}
+static kk_unit_t kk_hk_gui_set_style_spacing(double item_x, double item_y, double indent, kk_context_t* ctx) {
+    hk_gui_set_style_spacing(item_x, item_y, indent); return kk_Unit;
+}
+static kk_unit_t kk_hk_gui_set_style_borders(double window, double frame, kk_context_t* ctx) {
+    hk_gui_set_style_borders(window, frame); return kk_Unit;
 }
 
 static kk_integer_t kk_hk_gui_combo(kk_string_t label, kk_string_t items,
