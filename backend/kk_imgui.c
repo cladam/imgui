@@ -90,6 +90,15 @@ void        hk_gui_table_setup_column(const char* label);
 void        hk_gui_table_headers_row(void);
 void        hk_gui_table_next_row(void);
 void        hk_gui_table_next_column(void);
+void        hk_gui_set_color_text(double r, double g, double b);
+void        hk_gui_set_color_bg(double r, double g, double b);
+void        hk_gui_set_color_surface(double r, double g, double b);
+void        hk_gui_set_color_border(double r, double g, double b);
+void        hk_gui_set_color_accent(double r, double g, double b);
+void        hk_gui_set_style_rounding(double window, double frame, double tab);
+void        hk_gui_set_style_padding(double frame_x, double frame_y);
+int         hk_gui_color_button(const char* id, double r, double g, double b, double a, double w, double h);
+void        hk_gui_set_clipboard(const char* text);
 
 /* ---------------------------------------------------------------------------
  * Lifecycle
@@ -490,6 +499,46 @@ static kk_unit_t kk_hk_gui_table_next_row(kk_context_t* ctx) {
 
 static kk_unit_t kk_hk_gui_table_next_column(kk_context_t* ctx) {
     hk_gui_table_next_column();
+    return kk_Unit;
+}
+
+/* Theme */
+
+static kk_unit_t kk_hk_gui_set_color_text(double r, double g, double b, kk_context_t* ctx) {
+    hk_gui_set_color_text(r, g, b); return kk_Unit;
+}
+static kk_unit_t kk_hk_gui_set_color_bg(double r, double g, double b, kk_context_t* ctx) {
+    hk_gui_set_color_bg(r, g, b); return kk_Unit;
+}
+static kk_unit_t kk_hk_gui_set_color_surface(double r, double g, double b, kk_context_t* ctx) {
+    hk_gui_set_color_surface(r, g, b); return kk_Unit;
+}
+static kk_unit_t kk_hk_gui_set_color_border(double r, double g, double b, kk_context_t* ctx) {
+    hk_gui_set_color_border(r, g, b); return kk_Unit;
+}
+static kk_unit_t kk_hk_gui_set_color_accent(double r, double g, double b, kk_context_t* ctx) {
+    hk_gui_set_color_accent(r, g, b); return kk_Unit;
+}
+static kk_unit_t kk_hk_gui_set_style_rounding(double window, double frame, double tab,
+                                               kk_context_t* ctx) {
+    hk_gui_set_style_rounding(window, frame, tab); return kk_Unit;
+}
+static kk_unit_t kk_hk_gui_set_style_padding(double frame_x, double frame_y,
+                                              kk_context_t* ctx) {
+    hk_gui_set_style_padding(frame_x, frame_y); return kk_Unit;
+}
+static bool kk_hk_gui_color_button(kk_string_t id, double r, double g, double b,
+                                    double a, double w, double h,
+                                    kk_context_t* ctx) {
+    const char* cid = kk_string_cbuf_borrow(id, NULL, ctx);
+    bool result = hk_gui_color_button(cid, r, g, b, a, w, h) != 0;
+    kk_string_drop(id, ctx);
+    return result;
+}
+static kk_unit_t kk_hk_gui_set_clipboard(kk_string_t text, kk_context_t* ctx) {
+    const char* t = kk_string_cbuf_borrow(text, NULL, ctx);
+    hk_gui_set_clipboard(t);
+    kk_string_drop(text, ctx);
     return kk_Unit;
 }
 

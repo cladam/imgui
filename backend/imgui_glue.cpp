@@ -35,6 +35,10 @@ static SDL_Window*    g_window  = nullptr;
 static SDL_GLContext  g_gl_ctx  = nullptr;
 static bool           g_quit    = false;
 
+/* GL clear colour — kept in sync with hk_gui_set_color_bg so the area
+ * behind the root ImGui window matches the background theme. */
+static float g_clear_r = 0.902f, g_clear_g = 0.914f, g_clear_b = 0.933f;
+
 /* ---------------------------------------------------------------------------
  * Per-widget state tables
  *
@@ -450,7 +454,7 @@ void hk_gui_end_frame(void) {
     ImGuiIO& io = ImGui::GetIO();
     SDL_GL_MakeCurrent(g_window, g_gl_ctx);
     glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-    glClearColor(0.902f, 0.914f, 0.933f, 1.00f); /* hica window bg #E6E9EE */
+    glClearColor(g_clear_r, g_clear_g, g_clear_b, 1.00f);
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     SDL_GL_SwapWindow(g_window);
@@ -726,4 +730,114 @@ void hk_gui_table_next_row(void) {
 
 void hk_gui_table_next_column(void) {
     ImGui::TableNextColumn();
+}
+
+/* ---------------------------------------------------------------------------
+ * Theme — runtime color and geometry overrides
+ * -------------------------------------------------------------------------*/
+
+void hk_gui_set_color_text(double r, double g, double b) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    s.Colors[ImGuiCol_Text]         = ImVec4((float)r, (float)g, (float)b, 1.00f);
+    s.Colors[ImGuiCol_TextDisabled] = ImVec4((float)r, (float)g, (float)b, 0.55f);
+}
+
+void hk_gui_set_color_bg(double r, double g, double b) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    float fr = (float)r, fg = (float)g, fb = (float)b;
+    float cr = fr > 0.04f ? fr - 0.04f : 0.0f;
+    float cg = fg > 0.04f ? fg - 0.04f : 0.0f;
+    float cb = fb > 0.04f ? fb - 0.04f : 0.0f;
+    s.Colors[ImGuiCol_WindowBg]          = ImVec4(fr, fg, fb, 1.0f);
+    s.Colors[ImGuiCol_ChildBg]           = ImVec4(cr, cg, cb, 1.0f);
+    s.Colors[ImGuiCol_TitleBg]           = ImVec4(cr, cg, cb, 1.0f);
+    s.Colors[ImGuiCol_TitleBgCollapsed]  = ImVec4(cr, cg, cb, 1.0f);
+    s.Colors[ImGuiCol_MenuBarBg]         = ImVec4(cr, cg, cb, 1.0f);
+    s.Colors[ImGuiCol_ScrollbarBg]       = ImVec4(cr, cg, cb, 1.0f);
+    s.Colors[ImGuiCol_TableHeaderBg]     = ImVec4(cr, cg, cb, 1.0f);
+    s.Colors[ImGuiCol_Tab]               = ImVec4(cr, cg, cb, 1.0f);
+    s.Colors[ImGuiCol_TabDimmed]         = ImVec4(cr, cg, cb, 1.0f);
+    s.Colors[ImGuiCol_TabDimmedSelected] = ImVec4(cr, cg, cb, 1.0f);
+    s.Colors[ImGuiCol_Button]            = ImVec4(cr, cg, cb, 1.0f);
+    s.Colors[ImGuiCol_TabSelected]       = ImVec4(fr, fg, fb, 1.0f); /* selected tab = window bg */
+    /* Keep the GL clear colour in sync */
+    g_clear_r = fr; g_clear_g = fg; g_clear_b = fb;
+}
+
+void hk_gui_set_color_surface(double r, double g, double b) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    s.Colors[ImGuiCol_FrameBg]  = ImVec4((float)r, (float)g, (float)b, 1.0f);
+    s.Colors[ImGuiCol_PopupBg]  = ImVec4((float)r, (float)g, (float)b, 0.98f);
+}
+
+void hk_gui_set_color_border(double r, double g, double b) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    float fr = (float)r, fg = (float)g, fb = (float)b;
+    s.Colors[ImGuiCol_Border]              = ImVec4(fr, fg, fb, 1.0f);
+    s.Colors[ImGuiCol_Separator]           = ImVec4(fr, fg, fb, 1.0f);
+    s.Colors[ImGuiCol_ScrollbarGrab]       = ImVec4(fr, fg, fb, 0.80f);
+    s.Colors[ImGuiCol_TableBorderStrong]   = ImVec4(fr, fg, fb, 1.0f);
+    s.Colors[ImGuiCol_TableBorderLight]    = ImVec4(fr, fg, fb, 0.60f);
+    s.Colors[ImGuiCol_FrameBgHovered]      = ImVec4(fr, fg, fb, 1.0f);
+}
+
+void hk_gui_set_color_accent(double r, double g, double b) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    float fr = (float)r, fg = (float)g, fb = (float)b;
+    /* Brighter variant for active/pressed states */
+    float br = fr + 0.12f < 1.0f ? fr + 0.12f : 1.0f;
+    float bg_ = fg + 0.12f < 1.0f ? fg + 0.12f : 1.0f;
+    float bb = fb + 0.12f < 1.0f ? fb + 0.12f : 1.0f;
+    /* Solid (checks, grabs, active) */
+    s.Colors[ImGuiCol_CheckMark]             = ImVec4(fr, fg, fb, 1.00f);
+    s.Colors[ImGuiCol_SliderGrab]            = ImVec4(fr, fg, fb, 1.00f);
+    s.Colors[ImGuiCol_SliderGrabActive]      = ImVec4(br, bg_, bb, 1.00f);
+    s.Colors[ImGuiCol_ButtonActive]          = ImVec4(fr, fg, fb, 1.00f);
+    s.Colors[ImGuiCol_HeaderActive]          = ImVec4(fr, fg, fb, 1.00f);
+    s.Colors[ImGuiCol_ScrollbarGrabActive]   = ImVec4(fr, fg, fb, 1.00f);
+    s.Colors[ImGuiCol_ResizeGripActive]      = ImVec4(fr, fg, fb, 1.00f);
+    s.Colors[ImGuiCol_SeparatorActive]       = ImVec4(fr, fg, fb, 1.00f);
+    s.Colors[ImGuiCol_TabSelectedOverline]   = ImVec4(fr, fg, fb, 1.00f);
+    s.Colors[ImGuiCol_NavHighlight]          = ImVec4(fr, fg, fb, 1.00f);
+    s.Colors[ImGuiCol_DragDropTarget]        = ImVec4(fr, fg, fb, 1.00f);
+    /* Hover (18% alpha) */
+    s.Colors[ImGuiCol_ButtonHovered]         = ImVec4(fr, fg, fb, 0.18f);
+    s.Colors[ImGuiCol_HeaderHovered]         = ImVec4(fr, fg, fb, 0.18f);
+    s.Colors[ImGuiCol_ScrollbarGrabHovered]  = ImVec4(fr, fg, fb, 0.18f);
+    s.Colors[ImGuiCol_ResizeGripHovered]     = ImVec4(fr, fg, fb, 0.18f);
+    s.Colors[ImGuiCol_SeparatorHovered]      = ImVec4(fr, fg, fb, 0.18f);
+    s.Colors[ImGuiCol_TabHovered]            = ImVec4(fr, fg, fb, 0.18f);
+    s.Colors[ImGuiCol_TextSelectedBg]        = ImVec4(fr, fg, fb, 0.18f);
+    s.Colors[ImGuiCol_TitleBgActive]         = ImVec4(fr, fg, fb, 0.18f);
+    /* Dim (rest/subtle states) */
+    s.Colors[ImGuiCol_ResizeGrip]            = ImVec4(fr, fg, fb, 0.10f);
+    s.Colors[ImGuiCol_FrameBgActive]         = ImVec4(fr, fg, fb, 0.10f);
+    s.Colors[ImGuiCol_Header]                = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+    s.Colors[ImGuiCol_TableRowBgAlt]         = ImVec4(fr, fg, fb, 0.04f);
+    s.Colors[ImGuiCol_NavWindowingHighlight] = ImVec4(fr, fg, fb, 0.70f);
+}
+
+void hk_gui_set_style_rounding(double window, double frame, double tab) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    s.WindowRounding    = (float)window;
+    s.FrameRounding     = (float)frame;
+    s.TabRounding       = (float)tab;
+    s.GrabRounding      = (float)frame;
+    s.ScrollbarRounding = (float)window;
+    s.PopupRounding     = (float)((window + frame) * 0.5f);
+}
+
+void hk_gui_set_style_padding(double frame_x, double frame_y) {
+    ImGuiStyle& s = ImGui::GetStyle();
+    s.FramePadding = ImVec2((float)frame_x, (float)frame_y);
+}
+
+int hk_gui_color_button(const char* id, double r, double g, double b, double a,
+                         double w, double h) {
+    return ImGui::ColorButton(id, ImVec4((float)r,(float)g,(float)b,(float)a),
+                               0, ImVec2((float)w,(float)h)) ? 1 : 0;
+}
+
+void hk_gui_set_clipboard(const char* text) {
+    ImGui::SetClipboardText(text);
 }

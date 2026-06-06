@@ -282,6 +282,43 @@ void hk_gui_table_next_column(void);
 #define HK_TABLE_RESIZABLE      0x40000
 #define HK_TABLE_SIZING_STRETCH 0x60000000
 
+/* ---------------------------------------------------------------------------
+ * Theme — runtime color and geometry overrides
+ *
+ * Call these at the top of your gui_window callback each frame to apply a
+ * live theme.  Alpha is always 1.0; hover/active/dim variants are derived
+ * automatically so you only need to set the base hue.
+ * -------------------------------------------------------------------------*/
+
+/* Text + disabled text (disabled = base at 55% opacity). */
+void hk_gui_set_color_text(double r, double g, double b);
+
+/* Window, child, panel, menu bar, scrollbar, tab backgrounds.
+ * ChildBg is derived as 4% darker. */
+void hk_gui_set_color_bg(double r, double g, double b);
+
+/* Input fields, frames, popups, selected tab. */
+void hk_gui_set_color_surface(double r, double g, double b);
+
+/* Border, separator, scrollbar grab track. */
+void hk_gui_set_color_border(double r, double g, double b);
+
+/* Primary accent hue.  Derives hover (18% alpha) and active (full) variants
+ * for buttons, checkmarks, sliders, tabs, nav highlight, and resize grips. */
+void hk_gui_set_color_accent(double r, double g, double b);
+
+/* Set window, frame and tab corner rounding in pixels. */
+void hk_gui_set_style_rounding(double window, double frame, double tab);
+
+/* Set frame padding in pixels. */
+void hk_gui_set_style_padding(double frame_x, double frame_y);
+
+/* Solid coloured square.  Returns 1 when clicked.  w=0/h=0 uses default size. */
+int  hk_gui_color_button(const char* id, double r, double g, double b, double a, double w, double h);
+
+/* Copy text to the OS clipboard. */
+void hk_gui_set_clipboard(const char* text);
+
 #ifdef __cplusplus
 }
 #endif
