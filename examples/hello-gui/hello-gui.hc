@@ -52,7 +52,9 @@ fun main() {
         if gui_menu_item("Reset counter") {
           count = 0
         }
-        if gui_menu_item("Quit") { }
+        if gui_menu_item("Quit") {
+          exit(0)
+        }
       })
       gui_menu("View", () => {
         if gui_menu_item("Toggle feature") {
