@@ -161,3 +161,56 @@ pub fun gui_menu(label: string, content: () -> ()) {
 //     gui_table_next_column()  gui_text("42")
 //     gui_end_table()
 //   }
+
+// ---------------------------------------------------------------------------
+// Theme — runtime color and geometry overrides
+//
+// Call any of these at the top of your gui_window callback each frame to
+// apply a live theme.  Hover/active/dim variants of accent are derived
+// automatically so only the base hue is needed.
+// ---------------------------------------------------------------------------
+
+// Set text and disabled-text colors.
+pub fun gui_set_color_text(r: float, g: float, b: float) {
+  gui_raw_set_color_text(r, g, b)
+}
+
+// Set window, child, panel, tab, and button backgrounds + GL clear color.
+pub fun gui_set_color_bg(r: float, g: float, b: float) {
+  gui_raw_set_color_bg(r, g, b)
+}
+
+// Set input fields, frames, and popups.
+pub fun gui_set_color_surface(r: float, g: float, b: float) {
+  gui_raw_set_color_surface(r, g, b)
+}
+
+// Set borders, separators, and scrollbar track.
+pub fun gui_set_color_border(r: float, g: float, b: float) {
+  gui_raw_set_color_border(r, g, b)
+}
+
+// Set the primary accent hue; hover/active/dim variants are derived automatically.
+pub fun gui_set_color_accent(r: float, g: float, b: float) {
+  gui_raw_set_color_accent(r, g, b)
+}
+
+// Set window, frame, and tab corner rounding in pixels.
+pub fun gui_set_style_rounding(window: float, frame: float, tab: float) {
+  gui_raw_set_style_rounding(window, frame, tab)
+}
+
+// Set frame padding in pixels.
+pub fun gui_set_style_padding(frame_x: float, frame_y: float) {
+  gui_raw_set_style_padding(frame_x, frame_y)
+}
+
+// Solid coloured square; returns true when clicked.
+pub fun gui_color_button(id: string, r: float, g: float, b: float, a: float, w: float, h: float) : bool {
+  gui_raw_color_button(id, r, g, b, a, w, h)
+}
+
+// Copy text to the OS clipboard.
+pub fun gui_set_clipboard(text: string) {
+  gui_raw_set_clipboard(text)
+}

@@ -255,3 +255,39 @@ pub fun hc_gui_menu(label : string, content)
   if gui_begin_menu(label) then
     content()
     gui_end_menu()
+
+// .hc:169
+pub fun hc_gui_set_color_text(r : float64, g : float64, b : float64)
+  gui_raw_set_color_text(r, g, b)
+
+// .hc:173
+pub fun hc_gui_set_color_bg(r : float64, g : float64, b : float64)
+  gui_raw_set_color_bg(r, g, b)
+
+// .hc:178
+pub fun hc_gui_set_color_surface(r : float64, g : float64, b : float64)
+  gui_raw_set_color_surface(r, g, b)
+
+// .hc:183
+pub fun hc_gui_set_color_border(r : float64, g : float64, b : float64)
+  gui_raw_set_color_border(r, g, b)
+
+// .hc:188
+pub fun hc_gui_set_color_accent(r : float64, g : float64, b : float64)
+  gui_raw_set_color_accent(r, g, b)
+
+// .hc:193
+pub fun hc_gui_set_style_rounding(window : float64, frame : float64, tab : float64)
+  gui_raw_set_style_rounding(window, frame, tab)
+
+// .hc:198
+pub fun hc_gui_set_style_padding(frame_x : float64, frame_y : float64)
+  gui_raw_set_style_padding(frame_x, frame_y)
+
+// .hc:203
+pub fun hc_gui_color_button(id : string, r : float64, g : float64, b : float64, a : float64, w : float64, h : float64)
+  gui_raw_color_button(id, r, g, b, a, w, h)
+
+// .hc:208
+pub fun hc_gui_set_clipboard(text : string)
+  gui_raw_set_clipboard(text)

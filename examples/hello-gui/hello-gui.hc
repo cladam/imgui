@@ -22,6 +22,7 @@
 //   hica run examples/hello-gui/hello-gui.hc
 
 import "../../src/imgui"
+import "./my_theme"
 
 fun main() {
   // --- counter section ---
@@ -45,6 +46,7 @@ fun main() {
   var fruit   = 0      // combo index
 
   gui_window("hica -- Dear ImGui demo", 560, 720, () => {
+    apply_theme()
     gui_main_menu(() => {
       gui_menu("File", () => {
         if gui_menu_item("Reset counter") {

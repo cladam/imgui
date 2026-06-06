@@ -28,7 +28,8 @@ fun generate_theme(
   "// Usage:\n" +
   "//   1. Copy this file into your project\n" +
   "//   2. Adjust the import path below\n" +
-  "//   3. Call apply_theme() once before gui_window() in your main\n" +
+  "//   3. Call apply_theme() at the TOP of your gui_window callback,\n" +
+  "//      not before gui_window() -- ImGui context must exist first.\n" +
   "\n" +
   "import \"../../src/imgui\"\n" +
   "\n" +
