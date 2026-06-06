@@ -56,6 +56,36 @@ fun generate_theme(
   "\}\n"
 }
 
+// Parse float arguments from a theme function call line.
+// e.g. "  gui_set_color_text(0.118, 0.161, 0.231)" -> [0.118, 0.161, 0.231]
+fun parse_floats(line: string) : list<float> {
+  let open  = unwrap_maybe_or(index_of(line, "("), -1)
+  let close = unwrap_maybe_or(index_of(line, ")"), -1)
+  if open >= 0 && close > open {
+    let inner = line[open + 1 : close]
+    let parts = split(inner, ",")
+    map(parts, (s) => match parse_float(trim(s)) {
+      Some(v) => v,
+      None => 0.0
+    })
+  } else {
+    []
+  }
+}
+
+// Safe nth element of a float list (0.0 if out of bounds).
+fun nth_f(xs: list<float>, i: int) : float {
+  match xs {
+    [] => 0.0,
+    [h, ..rest] => if i == 0 { h } else { nth_f(rest, i - 1) }
+  }
+}
+
+// Short alias: extract the nth float argument from a theme call line.
+fun pf(line: string, n: int) : float {
+  nth_f(parse_floats(line), n)
+}
+
 fun main() {
   // Initial values — hica default light theme
   var rt = 0.118   var gt = 0.161   var bt = 0.231   // text
@@ -71,6 +101,8 @@ fun main() {
   var wpx = 14.0   var wpy = 12.0                    // window padding
   var isx = 8.0    var isy = 6.0    var ind = 18.0   // item spacing + indent
   var bws = 1.0    var bfs = 0.0                     // border sizes
+  var load_path = ""                                  // file loader state
+  var load_status = ""
 
   gui_window("hica Theme Editor", 560, 800, () => {
     // Apply theme live every frame — the window itself is the preview
@@ -89,6 +121,140 @@ fun main() {
     gui_set_style_borders(bws, bfs)
 
     gui_tab_bar("##editor", () => {
+
+      // ── Presets tab ──────────────────────────────────────────────────────
+      gui_tab("Presets", () => {
+        gui_spacing()
+        gui_text("Built-in themes")
+        gui_separator()
+        gui_spacing()
+        gui_text("Load a full theme into the sliders, then tweak in Colors / Geometry.")
+        gui_spacing()
+
+        if gui_button("hica Light") {
+          rt = 0.118  gt = 0.161  bt = 0.231
+          rb = 0.902  gb = 0.914  bb = 0.933
+          rs = 0.973  gs = 0.976  bs = 0.980
+          ro = 0.886  go = 0.910  bo = 0.941
+          ra = 0.310  ga = 0.275  ba = 0.898
+          rp = 0.031  gp = 0.569  bp = 0.698
+          rpb = 0.918  gpb = 0.345  bpb = 0.047
+          md = 0.20
+          wr = 8.0   fr = 5.0   tr = 5.0
+          px = 10.0  py = 5.0
+          wpx = 14.0  wpy = 12.0
+          isx = 8.0  isy = 6.0  ind = 18.0
+          bws = 1.0  bfs = 0.0
+        }
+        gui_tooltip("Default hica light theme — indigo accent, soft greys")
+        gui_same_line()
+        if gui_button("Ilseon Dark") {
+          rt = 0.910  gt = 0.910  bt = 0.925
+          rb = 0.071  gb = 0.071  bb = 0.090
+          rs = 0.110  gs = 0.110  bs = 0.141
+          ro = 0.369  go = 0.427  bo = 0.494
+          ra = 0.000  ga = 0.749  ba = 0.647
+          rp = 0.353  gp = 0.608  bp = 0.502
+          rpb = 0.753  gpb = 0.541  bpb = 0.243
+          md = 0.35
+          wr = 6.0   fr = 4.0   tr = 4.0
+          px = 8.0   py = 4.0
+          wpx = 12.0  wpy = 10.0
+          isx = 8.0  isy = 6.0  ind = 18.0
+          bws = 1.0  bfs = 0.0
+        }
+        gui_tooltip("OLED-focused dark theme — teal accent, near-black backgrounds")
+
+        gui_spacing()
+        gui_spacing()
+        gui_separator()
+        gui_spacing()
+        gui_text("Load from .hc file")
+        gui_separator()
+        gui_spacing()
+        gui_text_wrapped("Read a theme .hc file and load its values into the sliders.")
+        gui_text_wrapped("Files exported by this editor or the themes/ folder both work.")
+        gui_spacing()
+        load_path = gui_input_text("File path##lp", 512)
+        gui_tooltip("Absolute path, or relative to where you run the theme editor")
+        gui_spacing()
+        if gui_button("Load from file") {
+          match read_file(load_path) {
+            Ok(content) => {
+              foreach(lines(content), (line) => {
+                if contains(line, "gui_set_color_text(") {
+                  rt = pf(line, 0)
+                  gt = pf(line, 1)
+                  bt = pf(line, 2)
+                }
+                if contains(line, "gui_set_color_bg(") {
+                  rb = pf(line, 0)
+                  gb = pf(line, 1)
+                  bb = pf(line, 2)
+                }
+                if contains(line, "gui_set_color_surface(") {
+                  rs = pf(line, 0)
+                  gs = pf(line, 1)
+                  bs = pf(line, 2)
+                }
+                if contains(line, "gui_set_color_border(") {
+                  ro = pf(line, 0)
+                  go = pf(line, 1)
+                  bo = pf(line, 2)
+                }
+                if contains(line, "gui_set_color_accent(") {
+                  ra = pf(line, 0)
+                  ga = pf(line, 1)
+                  ba = pf(line, 2)
+                }
+                if contains(line, "gui_set_color_plot_bar(") {
+                  rpb = pf(line, 0)
+                  gpb = pf(line, 1)
+                  bpb = pf(line, 2)
+                }
+                if contains(line, "gui_set_color_plot(") {
+                  rp = pf(line, 0)
+                  gp = pf(line, 1)
+                  bp = pf(line, 2)
+                }
+                if contains(line, "gui_set_color_modal_dim(") {
+                  md = pf(line, 0)
+                }
+                if contains(line, "gui_set_style_rounding(") {
+                  wr = pf(line, 0)
+                  fr = pf(line, 1)
+                  tr = pf(line, 2)
+                }
+                if contains(line, "gui_set_style_window_padding(") {
+                  wpx = pf(line, 0)
+                  wpy = pf(line, 1)
+                }
+                if contains(line, "gui_set_style_padding(") {
+                  px = pf(line, 0)
+                  py = pf(line, 1)
+                }
+                if contains(line, "gui_set_style_spacing(") {
+                  isx = pf(line, 0)
+                  isy = pf(line, 1)
+                  ind = pf(line, 2)
+                }
+                if contains(line, "gui_set_style_borders(") {
+                  bws = pf(line, 0)
+                  bfs = pf(line, 1)
+                }
+              })
+              load_status = "Loaded!"
+            },
+            Err(msg) => {
+              load_status = "Error: " + msg
+            }
+          }
+        }
+        if str_length(load_status) > 0 {
+          gui_same_line()
+          gui_text(load_status)
+        }
+      })
 
       // ── Colors tab ──────────────────────────────────────────────────────
       gui_tab("Colors", () => {
