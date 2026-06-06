@@ -71,6 +71,19 @@ int         hk_gui_begin_tab_bar(const char* id);
 void        hk_gui_end_tab_bar(void);
 int         hk_gui_begin_tab_item(const char* label);
 void        hk_gui_end_tab_item(void);
+void        hk_gui_set_tooltip(const char* text);
+int         hk_gui_begin_tooltip(void);
+void        hk_gui_end_tooltip(void);
+void        hk_gui_open_popup(const char* id);
+int         hk_gui_begin_popup(const char* id);
+int         hk_gui_begin_popup_modal(const char* id);
+void        hk_gui_close_popup(void);
+void        hk_gui_end_popup(void);
+int         hk_gui_begin_main_menu_bar(void);
+void        hk_gui_end_main_menu_bar(void);
+int         hk_gui_begin_menu(const char* label);
+void        hk_gui_end_menu(void);
+int         hk_gui_menu_item(const char* label);
 
 /* ---------------------------------------------------------------------------
  * Lifecycle
@@ -352,6 +365,87 @@ static bool kk_hk_gui_begin_tab_item(kk_string_t label, kk_context_t* ctx) {
 static kk_unit_t kk_hk_gui_end_tab_item(kk_context_t* ctx) {
     hk_gui_end_tab_item();
     return kk_Unit;
+}
+
+/* Tooltips */
+
+static kk_unit_t kk_hk_gui_set_tooltip(kk_string_t text, kk_context_t* ctx) {
+    const char* s = kk_string_cbuf_borrow(text, NULL, ctx);
+    hk_gui_set_tooltip(s);
+    kk_string_drop(text, ctx);
+    return kk_Unit;
+}
+
+static bool kk_hk_gui_begin_tooltip(kk_context_t* ctx) {
+    return hk_gui_begin_tooltip() != 0;
+}
+
+static kk_unit_t kk_hk_gui_end_tooltip(kk_context_t* ctx) {
+    hk_gui_end_tooltip();
+    return kk_Unit;
+}
+
+/* Popups */
+
+static kk_unit_t kk_hk_gui_open_popup(kk_string_t id, kk_context_t* ctx) {
+    const char* cid = kk_string_cbuf_borrow(id, NULL, ctx);
+    hk_gui_open_popup(cid);
+    kk_string_drop(id, ctx);
+    return kk_Unit;
+}
+
+static bool kk_hk_gui_begin_popup(kk_string_t id, kk_context_t* ctx) {
+    const char* cid = kk_string_cbuf_borrow(id, NULL, ctx);
+    bool r = hk_gui_begin_popup(cid) != 0;
+    kk_string_drop(id, ctx);
+    return r;
+}
+
+static bool kk_hk_gui_begin_popup_modal(kk_string_t id, kk_context_t* ctx) {
+    const char* cid = kk_string_cbuf_borrow(id, NULL, ctx);
+    bool r = hk_gui_begin_popup_modal(cid) != 0;
+    kk_string_drop(id, ctx);
+    return r;
+}
+
+static kk_unit_t kk_hk_gui_close_popup(kk_context_t* ctx) {
+    hk_gui_close_popup();
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_end_popup(kk_context_t* ctx) {
+    hk_gui_end_popup();
+    return kk_Unit;
+}
+
+/* Menu bar */
+
+static bool kk_hk_gui_begin_main_menu_bar(kk_context_t* ctx) {
+    return hk_gui_begin_main_menu_bar() != 0;
+}
+
+static kk_unit_t kk_hk_gui_end_main_menu_bar(kk_context_t* ctx) {
+    hk_gui_end_main_menu_bar();
+    return kk_Unit;
+}
+
+static bool kk_hk_gui_begin_menu(kk_string_t label, kk_context_t* ctx) {
+    const char* lbl = kk_string_cbuf_borrow(label, NULL, ctx);
+    bool r = hk_gui_begin_menu(lbl) != 0;
+    kk_string_drop(label, ctx);
+    return r;
+}
+
+static kk_unit_t kk_hk_gui_end_menu(kk_context_t* ctx) {
+    hk_gui_end_menu();
+    return kk_Unit;
+}
+
+static bool kk_hk_gui_menu_item(kk_string_t label, kk_context_t* ctx) {
+    const char* lbl = kk_string_cbuf_borrow(label, NULL, ctx);
+    bool r = hk_gui_menu_item(lbl) != 0;
+    kk_string_drop(label, ctx);
+    return r;
 }
 
 static kk_integer_t kk_hk_gui_combo(kk_string_t label, kk_string_t items,

@@ -227,3 +227,31 @@ pub fun hc_gui_tab(label : string, content)
   if gui_begin_tab_item(label) then
     content()
     gui_end_tab_item()
+
+// .hc:88
+pub fun hc_gui_tooltip(text : string)
+  gui_set_tooltip(text)
+
+// .hc:100
+pub fun hc_gui_popup(id : string, content)
+  if gui_begin_popup(id) then
+    content()
+    gui_end_popup()
+
+// .hc:113
+pub fun hc_gui_modal(id : string, content)
+  if gui_begin_popup_modal(id) then
+    content()
+    gui_end_popup()
+
+// .hc:124
+pub fun hc_gui_main_menu(content)
+  if gui_begin_main_menu_bar() then
+    content()
+    gui_end_main_menu_bar()
+
+// .hc:132
+pub fun hc_gui_menu(label : string, content)
+  if gui_begin_menu(label) then
+    content()
+    gui_end_menu()

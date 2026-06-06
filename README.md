@@ -158,6 +158,59 @@ if gui_begin_panel("Settings") {
 }
 ```
 
+### Containers & structure
+
+| Helper | Signature | Purpose |
+|--------|-----------|---------|
+| `gui_child` | `(id: string, w: float, h: float, content: () -> ()) -> ()` | Scrollable child region |
+| `gui_tree` | `(label: string, content: () -> ()) -> ()` | Collapsible tree node |
+| `gui_with_item_width` | `(w: float, content: () -> ()) -> ()` | Constrain next widget width in pixels |
+| `gui_tab_bar` | `(id: string, content: () -> ()) -> ()` | Tab bar container |
+| `gui_tab` | `(label: string, content: () -> ()) -> ()` | One tab inside a `gui_tab_bar` |
+
+### Tooltips
+
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| `gui_tooltip` | `(text: string) -> ()` | Show a text tooltip when the previous widget is hovered |
+| `gui_set_tooltip` | `(text: string) -> ()` | Raw version (same behaviour) |
+| `gui_begin_tooltip` | `() -> bool` | Start a custom-content tooltip region |
+| `gui_end_tooltip` | `() -> ()` | End the tooltip region |
+
+### Popups
+
+| Helper | Signature | Purpose |
+|--------|-----------|---------|
+| `gui_open_popup` | `(id: string) -> ()` | Schedule a popup to open next frame |
+| `gui_popup` | `(id: string, content: () -> ()) -> ()` | Non-blocking popup window |
+| `gui_modal` | `(id: string, content: () -> ()) -> ()` | Blocking modal dialog |
+| `gui_close_popup` | `() -> ()` | Dismiss the current popup from within its block |
+
+```rust
+if gui_button("Options") { gui_open_popup("opts") }
+gui_popup("opts", () => {
+  if gui_menu_item("Reset") { ... }
+  if gui_button("Close")   { gui_close_popup() }
+})
+```
+
+### Menu bar
+
+| Helper | Signature | Purpose |
+|--------|-----------|---------|
+| `gui_main_menu` | `(content: () -> ()) -> ()` | Top-level OS menu bar |
+| `gui_menu` | `(label: string, content: () -> ()) -> ()` | Drop-down menu inside a bar or another menu |
+| `gui_menu_item` | `(label: string) -> bool` | Clickable item; returns `true` when clicked |
+
+```rust
+gui_main_menu(() => {
+  gui_menu("File", () => {
+    if gui_menu_item("Save") { save() }
+    if gui_menu_item("Quit") { }
+  })
+})
+```
+
 ### Widget state
 
 Sliders, checkboxes, and text inputs manage their own persistent state keyed by label string. Read the return value each frame to get the current value, the hica `var` bindings work naturally:

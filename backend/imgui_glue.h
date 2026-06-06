@@ -193,6 +193,63 @@ int hk_gui_begin_tab_item(const char* label);
 /* Close a tab item opened by hk_gui_begin_tab_item. */
 void hk_gui_end_tab_item(void);
 
+/* ---------------------------------------------------------------------------
+ * Tooltips
+ * -------------------------------------------------------------------------*/
+
+/* Show a plain-text tooltip on the previous widget (call after it). */
+void hk_gui_set_tooltip(const char* text);
+
+/* Begin a custom tooltip region.  Returns 1 always.
+ * Call hk_gui_end_tooltip() when done. */
+int  hk_gui_begin_tooltip(void);
+
+/* End a tooltip opened by hk_gui_begin_tooltip. */
+void hk_gui_end_tooltip(void);
+
+/* ---------------------------------------------------------------------------
+ * Popups
+ * -------------------------------------------------------------------------*/
+
+/* Schedule a popup to open next frame.  id must match the id passed to
+ * hk_gui_begin_popup / hk_gui_begin_popup_modal. */
+void hk_gui_open_popup(const char* id);
+
+/* Begin a popup window.  Returns 1 when the popup is open.
+ * Call hk_gui_end_popup() only when this returns 1. */
+int  hk_gui_begin_popup(const char* id);
+
+/* Begin a blocking modal popup.  Returns 1 when the popup is open.
+ * Call hk_gui_end_popup() only when this returns 1. */
+int  hk_gui_begin_popup_modal(const char* id);
+
+/* Close the current popup (call from within begin/end_popup). */
+void hk_gui_close_popup(void);
+
+/* End a popup opened by hk_gui_begin_popup or hk_gui_begin_popup_modal. */
+void hk_gui_end_popup(void);
+
+/* ---------------------------------------------------------------------------
+ * Menu bar
+ * -------------------------------------------------------------------------*/
+
+/* Begin the OS-level main menu bar at the top of the window.
+ * Returns 1 when visible; call hk_gui_end_main_menu_bar() only then. */
+int  hk_gui_begin_main_menu_bar(void);
+
+/* End the main menu bar. */
+void hk_gui_end_main_menu_bar(void);
+
+/* Begin a drop-down menu inside a menu bar or another menu.
+ * Returns 1 when the menu is open; call hk_gui_end_menu() only then. */
+int  hk_gui_begin_menu(const char* label);
+
+/* End a menu opened by hk_gui_begin_menu. */
+void hk_gui_end_menu(void);
+
+/* Display a menu item.  Returns 1 on the frame it is clicked. */
+int  hk_gui_menu_item(const char* label);
+
 #ifdef __cplusplus
 }
 #endif

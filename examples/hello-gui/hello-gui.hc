@@ -8,7 +8,14 @@
 //   Display:   gui_progress_bar
 //   Layout:    gui_separator, gui_same_line, gui_spacing, gui_new_line,
 //              gui_dummy, gui_indent, gui_unindent
-//   Panel:     gui_begin_panel / gui_end_panel
+//   Panels:    gui_begin_panel / gui_end_panel
+//   Child:     gui_child
+//   Tree:      gui_tree
+//   Item width: gui_with_item_width
+//   Tabs:      gui_tab_bar / gui_tab
+//   Tooltips:  gui_tooltip
+//   Popups:    gui_popup, gui_modal, gui_open_popup
+//   Menus:     gui_main_menu, gui_menu, gui_menu_item
 //
 // Build and run (from repo root):
 //   ./build.sh                         # build libimgui_hica.a (once)
@@ -37,7 +44,20 @@ fun main() {
   var sel_opt = 0      // selectable: 0=A 1=B 2=C
   var fruit   = 0      // combo index
 
-  gui_window("hica -- Dear ImGui demo", 560, 620, () => {
+  gui_window("hica -- Dear ImGui demo", 560, 720, () => {
+    gui_main_menu(() => {
+      gui_menu("File", () => {
+        if gui_menu_item("Reset counter") {
+          count = 0
+        }
+        if gui_menu_item("Quit") { }
+      })
+      gui_menu("View", () => {
+        if gui_menu_item("Toggle feature") {
+          enabled = !enabled
+        }
+      })
+    })
     // ── Header ────────────────────────────────────────────────────────────
     gui_text_colored("hica GUI demo", 0.0, 0.749, 0.647, 1.0)
     gui_text_wrapped("All widgets are demonstrated below. Resize the window to see text wrapping in action.")
@@ -182,6 +202,50 @@ fun main() {
           })
         })
       })
+      gui_end_panel()
+    }
+
+    // ── Tooltips, Popups & Menus ──────────────────────────────────────────
+    if gui_begin_panel("Overlays & Menus") {
+      // Tooltip — hover over the button to see it
+      gui_button("Hover me")
+      gui_tooltip("This is a tooltip!")
+      gui_same_line()
+      gui_text("<-- hover for tooltip")
+      gui_spacing()
+
+      // Popup
+      if gui_button("Open popup") {
+        gui_open_popup("demo_popup")
+      }
+      gui_popup("demo_popup", () => {
+        gui_text("I am a popup window.")
+        gui_spacing()
+        if gui_button("Close") {
+          gui_close_popup()
+        }
+      })
+      gui_same_line()
+
+      // Modal
+      if gui_button("Open modal") {
+        gui_open_popup("demo_modal")
+      }
+      gui_modal("demo_modal", () => {
+        gui_text("This is a blocking modal dialog.")
+        gui_text("Click Confirm or Cancel to close.")
+        gui_spacing()
+        if gui_button("Confirm") {
+          gui_close_popup()
+        }
+        gui_same_line()
+        if gui_button("Cancel") {
+          gui_close_popup()
+        }
+      })
+
+      gui_spacing()
+      gui_text("See the menu bar at the top of the window.")
       gui_end_panel()
     }
 

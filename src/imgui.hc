@@ -84,3 +84,61 @@ pub fun gui_tab(label: string, content: () -> ()) {
     gui_end_tab_item()
   }
 }
+
+// Simple text tooltip on the previous widget.
+//
+//   gui_button("Save")
+//   gui_tooltip("Save the current file")
+pub fun gui_tooltip(text: string) {
+  gui_set_tooltip(text)
+}
+
+// Popup triggered by gui_open_popup(id).
+//
+//   if gui_button("Options") { gui_open_popup("opts") }
+//   gui_popup("opts", () => {
+//     if gui_menu_item("Reset") { ... }
+//     if gui_menu_item("Close") { gui_close_popup() }
+//   })
+pub fun gui_popup(id: string, content: () -> ()) {
+  if gui_begin_popup(id) {
+    content()
+    gui_end_popup()
+  }
+}
+
+// Blocking modal dialog.
+//
+//   if gui_button("Confirm") { gui_open_popup("confirm") }
+//   gui_modal("confirm", () => {
+//     gui_text("Are you sure?")
+//     if gui_button("Yes") { gui_close_popup() }
+//   })
+pub fun gui_modal(id: string, content: () -> ()) {
+  if gui_begin_popup_modal(id) {
+    content()
+    gui_end_popup()
+  }
+}
+
+// Main menu bar with closure-style menus.
+//
+//   gui_main_menu(() => {
+//     gui_menu("File", () => {
+//       if gui_menu_item("Quit") { ... }
+//     })
+//   })
+pub fun gui_main_menu(content: () -> ()) {
+  if gui_begin_main_menu_bar() {
+    content()
+    gui_end_main_menu_bar()
+  }
+}
+
+// Drop-down menu inside a gui_main_menu or another gui_menu.
+pub fun gui_menu(label: string, content: () -> ()) {
+  if gui_begin_menu(label) {
+    content()
+    gui_end_menu()
+  }
+}

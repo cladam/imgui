@@ -633,3 +633,69 @@ int hk_gui_begin_tab_item(const char* label) {
 void hk_gui_end_tab_item(void) {
     ImGui::EndTabItem();
 }
+
+/* ---------------------------------------------------------------------------
+ * Tooltips
+ * -------------------------------------------------------------------------*/
+
+void hk_gui_set_tooltip(const char* text) {
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+        ImGui::SetTooltip("%s", text);
+}
+
+int hk_gui_begin_tooltip(void) {
+    ImGui::BeginTooltip();
+    return 1;
+}
+
+void hk_gui_end_tooltip(void) {
+    ImGui::EndTooltip();
+}
+
+/* ---------------------------------------------------------------------------
+ * Popups
+ * -------------------------------------------------------------------------*/
+
+void hk_gui_open_popup(const char* id) {
+    ImGui::OpenPopup(id);
+}
+
+int hk_gui_begin_popup(const char* id) {
+    return ImGui::BeginPopup(id) ? 1 : 0;
+}
+
+int hk_gui_begin_popup_modal(const char* id) {
+    return ImGui::BeginPopupModal(id, nullptr, ImGuiWindowFlags_AlwaysAutoResize) ? 1 : 0;
+}
+
+void hk_gui_close_popup(void) {
+    ImGui::CloseCurrentPopup();
+}
+
+void hk_gui_end_popup(void) {
+    ImGui::EndPopup();
+}
+
+/* ---------------------------------------------------------------------------
+ * Menu bar
+ * -------------------------------------------------------------------------*/
+
+int hk_gui_begin_main_menu_bar(void) {
+    return ImGui::BeginMainMenuBar() ? 1 : 0;
+}
+
+void hk_gui_end_main_menu_bar(void) {
+    ImGui::EndMainMenuBar();
+}
+
+int hk_gui_begin_menu(const char* label) {
+    return ImGui::BeginMenu(label) ? 1 : 0;
+}
+
+void hk_gui_end_menu(void) {
+    ImGui::EndMenu();
+}
+
+int hk_gui_menu_item(const char* label) {
+    return ImGui::MenuItem(label) ? 1 : 0;
+}
