@@ -142,3 +142,22 @@ pub fun gui_menu(label: string, content: () -> ()) {
     gui_end_menu()
   }
 }
+
+// Closure-based table.  columns defines how many columns.
+// Use flags=0 for a plain table; add 3 for borders, 64 for alternating rows.
+//
+//   gui_table("##t", 3, 3, ["Name", "Type", "Value"], rows, (row) => {
+//     -- not directly supported due to hica lambda limits;
+//     -- use the raw API below instead
+//   })
+//
+// Simple two-step pattern:
+//   if gui_begin_table("##scores", 2, 3) {
+//     gui_table_setup_column("Player")
+//     gui_table_setup_column("Score")
+//     gui_table_headers_row()
+//     gui_table_next_row()
+//     gui_table_next_column()  gui_text("Alice")
+//     gui_table_next_column()  gui_text("42")
+//     gui_end_table()
+//   }

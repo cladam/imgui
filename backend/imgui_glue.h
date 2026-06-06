@@ -250,6 +250,38 @@ void hk_gui_end_menu(void);
 /* Display a menu item.  Returns 1 on the frame it is clicked. */
 int  hk_gui_menu_item(const char* label);
 
+/* ---------------------------------------------------------------------------
+ * Tables
+ * -------------------------------------------------------------------------*/
+
+/* Begin a table with the given number of columns.
+ * flags: 0 for defaults, or combine ImGuiTableFlags_* values.
+ * Returns 1 if the table is visible; call hk_gui_end_table() only then. */
+int  hk_gui_begin_table(const char* id, int columns, int flags);
+
+/* End a table opened by hk_gui_begin_table. */
+void hk_gui_end_table(void);
+
+/* Define a column header.  Call once per column after begin_table. */
+void hk_gui_table_setup_column(const char* label);
+
+/* Emit the header row from column labels set by hk_gui_table_setup_column. */
+void hk_gui_table_headers_row(void);
+
+/* Advance to the next row.  Call before filling each row of cells. */
+void hk_gui_table_next_row(void);
+
+/* Advance to the next cell within the current row. */
+void hk_gui_table_next_column(void);
+
+/* Convenience flag constants (mirrors ImGuiTableFlags) */
+#define HK_TABLE_BORDERS_INNER  0x01
+#define HK_TABLE_BORDERS_OUTER  0x02
+#define HK_TABLE_BORDERS        0x03
+#define HK_TABLE_ROW_BG         0x40
+#define HK_TABLE_RESIZABLE      0x40000
+#define HK_TABLE_SIZING_STRETCH 0x60000000
+
 #ifdef __cplusplus
 }
 #endif

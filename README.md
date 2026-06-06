@@ -211,6 +211,45 @@ gui_main_menu(() => {
 })
 ```
 
+### Tables
+
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| `gui_begin_table` | `(id: string, columns: int, flags: int) -> bool` | Start a table; returns `true` when visible |
+| `gui_end_table` | `() -> ()` | End the table |
+| `gui_table_setup_column` | `(label: string) -> ()` | Define a column header label |
+| `gui_table_headers_row` | `() -> ()` | Emit the header row from setup columns |
+| `gui_table_next_row` | `() -> ()` | Advance to the next row |
+| `gui_table_next_column` | `() -> ()` | Advance to the next cell |
+
+**Common flag values** (combine with `+`):
+
+| Value | Meaning |
+|-------|---------|
+| `0` | Plain table, no decorations |
+| `1` | Inner cell borders |
+| `2` | Outer border |
+| `3` | Both borders |
+| `64` | Alternating row background |
+| `67` | Borders + alternating rows (most common) |
+
+```rust
+if gui_begin_table("##scores", 3, 67) {
+  gui_table_setup_column("Player")
+  gui_table_setup_column("Score")
+  gui_table_setup_column("Level")
+  gui_table_headers_row()
+  gui_table_next_row()
+  gui_table_next_column()  // cell [0,0]
+  gui_text("Alice")
+  gui_table_next_column()  // cell [0,1]
+  gui_text("1024")
+  gui_table_next_column()  // cell [0,2]
+  gui_text("12")
+  gui_end_table()
+}
+```
+
 ### Widget state
 
 Sliders, checkboxes, and text inputs manage their own persistent state keyed by label string. Read the return value each frame to get the current value, the hica `var` bindings work naturally:

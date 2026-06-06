@@ -205,6 +205,40 @@ fun main() {
       gui_end_panel()
     }
 
+    // ── Tables ────────────────────────────────────────────────────────────
+    if gui_begin_panel("Tables") {
+      // flags: 1=inner borders, 2=outer border, 64=alternating row bg → 67
+      if gui_begin_table("##scores", 3, 67) {
+        gui_table_setup_column("Player")
+        gui_table_setup_column("Score")
+        gui_table_setup_column("Level")
+        gui_table_headers_row()
+        gui_table_next_row()
+        gui_table_next_column()
+        gui_text("Alice")
+        gui_table_next_column()
+        gui_text("1 024")
+        gui_table_next_column()
+        gui_text("12")
+        gui_table_next_row()
+        gui_table_next_column()
+        gui_text("Bob")
+        gui_table_next_column()
+        gui_text("768")
+        gui_table_next_column()
+        gui_text("9")
+        gui_table_next_row()
+        gui_table_next_column()
+        gui_text("Carol")
+        gui_table_next_column()
+        gui_text("2 048")
+        gui_table_next_column()
+        gui_text("17")
+        gui_end_table()
+      }
+      gui_end_panel()
+    }
+
     // ── Tooltips, Popups & Menus ──────────────────────────────────────────
     if gui_begin_panel("Overlays & Menus") {
       // Tooltip — hover over the button to see it

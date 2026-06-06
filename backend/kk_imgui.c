@@ -84,6 +84,12 @@ void        hk_gui_end_main_menu_bar(void);
 int         hk_gui_begin_menu(const char* label);
 void        hk_gui_end_menu(void);
 int         hk_gui_menu_item(const char* label);
+int         hk_gui_begin_table(const char* id, int columns, int flags);
+void        hk_gui_end_table(void);
+void        hk_gui_table_setup_column(const char* label);
+void        hk_gui_table_headers_row(void);
+void        hk_gui_table_next_row(void);
+void        hk_gui_table_next_column(void);
 
 /* ---------------------------------------------------------------------------
  * Lifecycle
@@ -448,7 +454,44 @@ static bool kk_hk_gui_menu_item(kk_string_t label, kk_context_t* ctx) {
     return r;
 }
 
-static kk_integer_t kk_hk_gui_combo(kk_string_t label, kk_string_t items,
+/* Tables */
+
+static bool kk_hk_gui_begin_table(kk_string_t id, kk_integer_t columns,
+                                   kk_integer_t flags, kk_context_t* ctx) {
+    const char* cid = kk_string_cbuf_borrow(id, NULL, ctx);
+    bool r = hk_gui_begin_table(cid,
+                                 kk_integer_clamp32(columns, ctx),
+                                 kk_integer_clamp32(flags, ctx)) != 0;
+    kk_string_drop(id, ctx);
+    return r;
+}
+
+static kk_unit_t kk_hk_gui_end_table(kk_context_t* ctx) {
+    hk_gui_end_table();
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_table_setup_column(kk_string_t label, kk_context_t* ctx) {
+    const char* lbl = kk_string_cbuf_borrow(label, NULL, ctx);
+    hk_gui_table_setup_column(lbl);
+    kk_string_drop(label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_table_headers_row(kk_context_t* ctx) {
+    hk_gui_table_headers_row();
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_table_next_row(kk_context_t* ctx) {
+    hk_gui_table_next_row();
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_table_next_column(kk_context_t* ctx) {
+    hk_gui_table_next_column();
+    return kk_Unit;
+}(kk_string_t label, kk_string_t items,
                                      kk_integer_t def_index,
                                      kk_context_t* ctx) {
     const char* lbl  = kk_string_cbuf_borrow(label, NULL, ctx);

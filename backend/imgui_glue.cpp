@@ -699,3 +699,31 @@ void hk_gui_end_menu(void) {
 int hk_gui_menu_item(const char* label) {
     return ImGui::MenuItem(label) ? 1 : 0;
 }
+
+/* ---------------------------------------------------------------------------
+ * Tables
+ * -------------------------------------------------------------------------*/
+
+int hk_gui_begin_table(const char* id, int columns, int flags) {
+    return ImGui::BeginTable(id, columns, (ImGuiTableFlags)flags) ? 1 : 0;
+}
+
+void hk_gui_end_table(void) {
+    ImGui::EndTable();
+}
+
+void hk_gui_table_setup_column(const char* label) {
+    ImGui::TableSetupColumn(label);
+}
+
+void hk_gui_table_headers_row(void) {
+    ImGui::TableHeadersRow();
+}
+
+void hk_gui_table_next_row(void) {
+    ImGui::TableNextRow();
+}
+
+void hk_gui_table_next_column(void) {
+    ImGui::TableNextColumn();
+}
