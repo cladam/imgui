@@ -196,3 +196,10 @@ pub fun hc_gui_window(title : string, w : int, h : int, frame)
     frame()
     gui_end_frame()
   gui_shutdown()
+
+// .hc:35
+pub fun hc_gui_child(id : string, w : float64, h : float64, content)
+  if gui_begin_child(id, w, h) then
+    ()
+  content()
+  gui_end_child()

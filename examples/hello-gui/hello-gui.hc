@@ -34,6 +34,7 @@ fun main() {
 
   // --- selection section ---
   var choice  = 0      // radio: 0=Alpha 1=Beta 2=Gamma
+  var sel_opt = 0      // selectable: 0=A 1=B 2=C
   var fruit   = 0      // combo index
 
   gui_window("hica -- Dear ImGui demo", 560, 620, () => {
@@ -99,10 +100,10 @@ fun main() {
       if gui_radio_button("Gamma", choice == 2) { choice = 2 }
       gui_spacing()
 
-      gui_text("Selectable rows (widget owns state):")
-      gui_selectable("Option A", false)
-      gui_selectable("Option B", false)
-      gui_selectable("Option C", false)
+      gui_text("Selectable rows (caller owns state):") 
+      if gui_selectable("Option A", sel_opt == 0) { sel_opt = 0 }
+      if gui_selectable("Option B", sel_opt == 1) { sel_opt = 1 }
+      if gui_selectable("Option C", sel_opt == 2) { sel_opt = 2 }
       gui_spacing()
 
       fruit = gui_combo("Fruit", "Apple\nBanana\nCherry\nDurian", fruit)

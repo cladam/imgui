@@ -453,10 +453,18 @@ int hk_gui_radio_button(const char* label, int active) {
 }
 
 int hk_gui_selectable(const char* label, int selected) {
-    bool* v = bool_state(label, selected != 0);
-    if (!v) return selected;
-    ImGui::Selectable(label, v);
-    return *v ? 1 : 0;
+    /* Stateless: caller owns the selection state.  Returns true when clicked. */
+    return ImGui::Selectable(label, selected != 0) ? 1 : 0;
+}
+
+int hk_gui_begin_child(const char* id, double w, double h) {
+    /* Always returns 1; EndChild must always be called. */
+    ImGui::BeginChild(id, ImVec2((float)w, (float)h));
+    return 1;
+}
+
+void hk_gui_end_child(void) {
+    ImGui::EndChild();
 }
 
 int hk_gui_combo(const char* label, const char* items, int def_index) {
@@ -479,3 +487,15 @@ void hk_gui_progress_bar(double fraction, const char* overlay) {
     /* ImVec2(-1,0) = fill available width; overlay NULL uses default "XX%" */
     ImGui::ProgressBar((float)fraction, ImVec2(-1.0f, 0.0f), overlay);
 }
+
+void hk_gui_begin_group(void)  { ImGui::BeginGroup(); }
+void hk_gui_end_group(void)    { ImGui::EndGroup(); }
+
+void hk_gui_push_item_width(double w) { ImGui::PushItemWidth((float)w); }
+void hk_gui_pop_item_width(void)      { ImGui::PopItemWidth(); }
+
+int hk_gui_tree_node(const char* label) {
+    return ImGui::TreeNode(label) ? 1 : 0;
+}
+
+void hk_gui_tree_pop(void) { ImGui::TreePop(); }

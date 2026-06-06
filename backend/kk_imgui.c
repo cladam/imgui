@@ -57,8 +57,16 @@ int         hk_gui_begin_panel(const char* label);
 void        hk_gui_end_panel(void);
 int         hk_gui_radio_button(const char* label, int active);
 int         hk_gui_selectable(const char* label, int selected);
+int         hk_gui_begin_child(const char* id, double w, double h);
+void        hk_gui_end_child(void);
 int         hk_gui_combo(const char* label, const char* items, int def_index);
 void        hk_gui_progress_bar(double fraction, const char* overlay);
+void        hk_gui_begin_group(void);
+void        hk_gui_end_group(void);
+void        hk_gui_push_item_width(double w);
+void        hk_gui_pop_item_width(void);
+int         hk_gui_tree_node(const char* label);
+void        hk_gui_tree_pop(void);
 
 /* ---------------------------------------------------------------------------
  * Lifecycle
@@ -271,6 +279,51 @@ static bool kk_hk_gui_selectable(kk_string_t label, bool selected,
     int r = hk_gui_selectable(lbl, selected ? 1 : 0);
     kk_string_drop(label, ctx);
     return r != 0;
+}
+
+static bool kk_hk_gui_begin_child(kk_string_t id, double w, double h,
+                                   kk_context_t* ctx) {
+    const char* cid = kk_string_cbuf_borrow(id, NULL, ctx);
+    int r = hk_gui_begin_child(cid, w, h);
+    kk_string_drop(id, ctx);
+    return r != 0;
+}
+
+static kk_unit_t kk_hk_gui_end_child(kk_context_t* ctx) {
+    hk_gui_end_child();
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_begin_group(kk_context_t* ctx) {
+    hk_gui_begin_group();
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_end_group(kk_context_t* ctx) {
+    hk_gui_end_group();
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_push_item_width(double w, kk_context_t* ctx) {
+    hk_gui_push_item_width(w);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_pop_item_width(kk_context_t* ctx) {
+    hk_gui_pop_item_width();
+    return kk_Unit;
+}
+
+static bool kk_hk_gui_tree_node(kk_string_t label, kk_context_t* ctx) {
+    const char* lbl = kk_string_cbuf_borrow(label, NULL, ctx);
+    bool r = hk_gui_tree_node(lbl) != 0;
+    kk_string_drop(label, ctx);
+    return r;
+}
+
+static kk_unit_t kk_hk_gui_tree_pop(kk_context_t* ctx) {
+    hk_gui_tree_pop();
+    return kk_Unit;
 }
 
 static kk_integer_t kk_hk_gui_combo(kk_string_t label, kk_string_t items,

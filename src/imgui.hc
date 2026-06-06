@@ -24,3 +24,17 @@ pub fun gui_window(title: string, w: int, h: int, frame: () -> ()) {
   }
   gui_shutdown()
 }
+
+// Scrollable child region.  Always calls gui_end_child() regardless of
+// whether the region is visible, so content is always safe to render.
+//
+//   gui_child("##list", 0.0, 200.0, () => {
+//     gui_text("inside the scrollable region")
+//   })
+//
+// w=0.0 fills available width; h=0.0 fills available height.
+pub fun gui_child(id: string, w: float, h: float, content: () -> ()) {
+  if gui_begin_child(id, w, h) { }
+  content()
+  gui_end_child()
+}

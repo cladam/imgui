@@ -133,10 +133,19 @@ void hk_gui_end_panel(void);
  * Returns 1 on the frame it is clicked (caller should update the selection). */
 int hk_gui_radio_button(const char* label, int active);
 
-/* Display a selectable row.  Manages its own selected state.
- * selected : initial/current selected state (0 or 1).
- * Returns the current selected state (toggles on click). */
+/* Display a selectable row.  Stateless: renders as selected when selected=1;
+ * returns 1 on the frame it is clicked.  Caller owns the selection state. */
 int hk_gui_selectable(const char* label, int selected);
+
+/* Begin a scrollable child region.
+ * id : unique string ID (use "##id" to hide the label).
+ * w  : width in pixels; 0 = fill available width.
+ * h  : height in pixels; 0 = fill available height.
+ * Returns 1 always; hk_gui_end_child() must always be called. */
+int hk_gui_begin_child(const char* id, double w, double h);
+
+/* End a child region opened by hk_gui_begin_child.  Always call this. */
+void hk_gui_end_child(void);
 
 /* Display a combo/dropdown.  Manages its own state keyed by label.
  * items      : newline-separated list of item strings.
@@ -147,6 +156,26 @@ int hk_gui_combo(const char* label, const char* items, int def_index);
 /* Display a progress bar filled to fraction (0.0–1.0).
  * overlay : text drawn over the bar; pass NULL for the default "XX%" label. */
 void hk_gui_progress_bar(double fraction, const char* overlay);
+
+/* Start a group: subsequent widgets share the same cursor origin so that
+ * SameLine() can treat the whole group as a single item. */
+void hk_gui_begin_group(void);
+
+/* End a group opened by hk_gui_begin_group. */
+void hk_gui_end_group(void);
+
+/* Push a fixed pixel width for the next input/slider/combo widget only. */
+void hk_gui_push_item_width(double w);
+
+/* Pop the item width pushed by hk_gui_push_item_width. */
+void hk_gui_pop_item_width(void);
+
+/* Display a collapsible tree node.  Returns 1 if expanded (caller should
+ * render children and call hk_gui_tree_pop); 0 if collapsed. */
+int hk_gui_tree_node(const char* label);
+
+/* Close a tree node opened by hk_gui_tree_node. */
+void hk_gui_tree_pop(void);
 
 #ifdef __cplusplus
 }

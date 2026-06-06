@@ -1,0 +1,18 @@
+@project {
+    name: "file-browser"
+    version: "0.1.0"
+    entry: "file-browser.hc"
+}
+
+@koka {
+    // Run ./build.sh from the repo root first to produce lib/libimgui_hica.a,
+    // or download the pre-built .a from the GitHub Releases page.
+    //
+    // macOS Apple Silicon (default):
+    //   --cclinkopts=-L/opt/homebrew/opt/sdl2/lib  + -framework OpenGL
+    //
+    // Linux:
+    //   (omit the -L/opt/homebrew line)  +  --cclib=GL  (remove -framework/-lc++ flags)
+    include: "../../src"
+    flags: "--cclinkopts=-L../../lib --cclinkopts=-L/opt/homebrew/opt/sdl2/lib --cclib=imgui_hica --cclib=SDL2 --cclinkopts=-lc++ --cclinkopts=-framework --cclinkopts=OpenGL"
+}
