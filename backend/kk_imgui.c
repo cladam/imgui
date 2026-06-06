@@ -491,7 +491,9 @@ static kk_unit_t kk_hk_gui_table_next_row(kk_context_t* ctx) {
 static kk_unit_t kk_hk_gui_table_next_column(kk_context_t* ctx) {
     hk_gui_table_next_column();
     return kk_Unit;
-}(kk_string_t label, kk_string_t items,
+}
+
+static kk_integer_t kk_hk_gui_combo(kk_string_t label, kk_string_t items,
                                      kk_integer_t def_index,
                                      kk_context_t* ctx) {
     const char* lbl  = kk_string_cbuf_borrow(label, NULL, ctx);
