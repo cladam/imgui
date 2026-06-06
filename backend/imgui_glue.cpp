@@ -131,6 +131,124 @@ static char* text_state(const char* label, int capacity) {
  * Palette values taken from stdlib/std/term.hc ilseon_* functions.
  * -------------------------------------------------------------------------*/
 
+/* ---------------------------------------------------------------------------
+ * hica theme — default
+ *
+ * Palette derived from the hica website and logo:
+ *   Indigo  #5B4FCF  — primary accent (matches nav-active + link colour)
+ *   Blue    #3A6BD5  — secondary (logo hexagon fill)
+ *   Coral   #E04545  — active-press accent (logo arrow →)
+ *   Backgrounds run from #0B0C14 (deepest) through #12131F → #1A1B2E.
+ *
+ * Layout geometry is Spectrum-inspired: slightly more rounding and padding
+ * than vanilla ImGui.
+ * -------------------------------------------------------------------------*/
+static void hk_apply_hica_theme() {
+    ImGuiStyle& s = ImGui::GetStyle();
+    ImVec4* c = s.Colors;
+
+    // --- Palette — exact values from hica/assets/css/style.css + syntax.css ---
+    //   body bg         : #FCFCFC
+    //   --sidebar-bg    : #f8f9fa
+    //   --border-color  : #e2e8f0
+    //   --primary-text  : #1e293b
+    //   --secondary-text: #64748b
+    //   --accent-indigo : #4f46e5
+    //   --accent-cyan   : #0891b2  (function color in syntax.css)
+    //   keyword violet  : #7c3aed  (syntax.css .k)
+    //   variable orange : #ea580c  (syntax.css .nv)
+    const ImVec4 indigo      = ImVec4(0.310f, 0.275f, 0.898f, 1.00f); // #4f46e5 --accent-indigo
+    const ImVec4 indigo_h    = ImVec4(0.427f, 0.400f, 0.945f, 1.00f); // #6D66F1 hover
+    const ImVec4 indigo_med  = ImVec4(0.310f, 0.275f, 0.898f, 0.18f);
+    const ImVec4 indigo_dim  = ImVec4(0.310f, 0.275f, 0.898f, 0.10f);
+    const ImVec4 indigo_text = ImVec4(1.00f,  1.00f,  1.00f,  1.00f); // white text on indigo bg
+    const ImVec4 cyan        = ImVec4(0.031f, 0.569f, 0.698f, 1.00f); // #0891b2 --accent-cyan
+    const ImVec4 orange      = ImVec4(0.918f, 0.345f, 0.047f, 1.00f); // #ea580c variable colour
+    const ImVec4 text_main   = ImVec4(0.118f, 0.161f, 0.231f, 1.00f); // #1e293b --primary-text
+    const ImVec4 text_muted  = ImVec4(0.392f, 0.455f, 0.545f, 1.00f); // #64748b --secondary-text
+    const ImVec4 border      = ImVec4(0.886f, 0.910f, 0.941f, 1.00f); // #e2e8f0 --border-color
+    const ImVec4 bg_body     = ImVec4(0.902f, 0.914f, 0.933f, 1.00f); // #E6E9EE medium light (window bg)
+    const ImVec4 bg_sidebar  = ImVec4(0.863f, 0.878f, 0.902f, 1.00f); // #DCE0E6 slightly deeper for panels
+    const ImVec4 bg_frame    = ImVec4(0.973f, 0.976f, 0.980f, 1.00f); // #f8f9fa input fields (was white)
+    const ImVec4 bg_hover    = ImVec4(0.831f, 0.851f, 0.882f, 1.00f); // #D4D9E1 hover
+    const ImVec4 bg_popup    = ImVec4(1.000f, 1.000f, 1.000f, 0.98f); // white popups
+    const ImVec4 none        = ImVec4(0.000f, 0.000f, 0.000f, 0.00f);
+
+    c[ImGuiCol_Text]                  = text_main;
+    c[ImGuiCol_TextDisabled]          = text_muted;
+    c[ImGuiCol_WindowBg]              = bg_body;
+    c[ImGuiCol_ChildBg]               = bg_sidebar;
+    c[ImGuiCol_PopupBg]               = bg_popup;
+    c[ImGuiCol_Border]                = border;
+    c[ImGuiCol_BorderShadow]          = none;
+    c[ImGuiCol_FrameBg]               = bg_frame;
+    c[ImGuiCol_FrameBgHovered]        = bg_hover;
+    c[ImGuiCol_FrameBgActive]         = indigo_dim;
+    c[ImGuiCol_TitleBg]               = bg_sidebar;
+    c[ImGuiCol_TitleBgActive]         = indigo_med;
+    c[ImGuiCol_TitleBgCollapsed]      = bg_sidebar;
+    c[ImGuiCol_MenuBarBg]             = bg_sidebar;
+    c[ImGuiCol_ScrollbarBg]           = bg_sidebar;
+    c[ImGuiCol_ScrollbarGrab]         = border;
+    c[ImGuiCol_ScrollbarGrabHovered]  = indigo_med;
+    c[ImGuiCol_ScrollbarGrabActive]   = indigo;
+    c[ImGuiCol_CheckMark]             = indigo;
+    c[ImGuiCol_SliderGrab]            = indigo;
+    c[ImGuiCol_SliderGrabActive]      = indigo_h;
+    c[ImGuiCol_Button]                = bg_sidebar;
+    c[ImGuiCol_ButtonHovered]         = indigo_med;
+    c[ImGuiCol_ButtonActive]          = indigo;
+    c[ImGuiCol_Header]                = none;
+    c[ImGuiCol_HeaderHovered]         = indigo_med;
+    c[ImGuiCol_HeaderActive]          = indigo_dim;
+    c[ImGuiCol_Separator]             = border;
+    c[ImGuiCol_SeparatorHovered]      = indigo_med;
+    c[ImGuiCol_SeparatorActive]       = indigo;
+    c[ImGuiCol_ResizeGrip]            = indigo_dim;
+    c[ImGuiCol_ResizeGripHovered]     = indigo_med;
+    c[ImGuiCol_ResizeGripActive]      = indigo;
+    c[ImGuiCol_Tab]                   = bg_sidebar;
+    c[ImGuiCol_TabHovered]            = indigo_med;
+    c[ImGuiCol_TabSelected]           = bg_body;
+    c[ImGuiCol_TabSelectedOverline]   = indigo;
+    c[ImGuiCol_TabDimmed]             = bg_sidebar;
+    c[ImGuiCol_TabDimmedSelected]     = bg_sidebar;
+    c[ImGuiCol_PlotLines]             = cyan;
+    c[ImGuiCol_PlotLinesHovered]      = indigo_h;
+    c[ImGuiCol_PlotHistogram]         = orange;
+    c[ImGuiCol_PlotHistogramHovered]  = ImVec4(1.000f, 0.490f, 0.145f, 1.00f); // #FF7D25 brighter orange
+    c[ImGuiCol_TableHeaderBg]         = bg_sidebar;
+    c[ImGuiCol_TableBorderStrong]     = border;
+    c[ImGuiCol_TableBorderLight]      = ImVec4(0.886f, 0.910f, 0.941f, 0.60f);
+    c[ImGuiCol_TableRowBg]            = none;
+    c[ImGuiCol_TableRowBgAlt]         = ImVec4(0.310f, 0.275f, 0.898f, 0.04f);
+    c[ImGuiCol_TextSelectedBg]        = indigo_med;
+    c[ImGuiCol_DragDropTarget]        = indigo;
+    c[ImGuiCol_NavHighlight]          = indigo;
+    c[ImGuiCol_NavWindowingHighlight] = ImVec4(0.310f, 0.275f, 0.898f, 0.70f);
+    c[ImGuiCol_NavWindowingDimBg]     = ImVec4(0.0f, 0.0f, 0.0f, 0.10f);
+    c[ImGuiCol_ModalWindowDimBg]      = ImVec4(0.0f, 0.0f, 0.0f, 0.20f);
+
+    // --- Spectrum-inspired geometry (more rounding + padding than vanilla ImGui) ---
+    s.WindowRounding    = 8.0f;
+    s.FrameRounding     = 5.0f;
+    s.ScrollbarRounding = 8.0f;
+    s.GrabRounding      = 5.0f;
+    s.TabRounding       = 5.0f;
+    s.PopupRounding     = 6.0f;
+    s.WindowPadding     = ImVec2(14.0f, 12.0f);
+    s.FramePadding      = ImVec2(10.0f, 5.0f);
+    s.ItemSpacing       = ImVec2(8.0f, 6.0f);
+    s.IndentSpacing     = 18.0f;
+    s.WindowBorderSize  = 1.0f;
+    s.FrameBorderSize   = 0.0f;
+}
+
+/* ---------------------------------------------------------------------------
+ * Ilseon theme — alternative dark theme (publishable separately)
+ *
+ * OLED-black backgrounds with a teal (#00BFA5) accent.
+ * -------------------------------------------------------------------------*/
 static void hk_apply_ilseon_theme() {
     ImGuiStyle& s = ImGui::GetStyle();
     ImVec4* c = s.Colors;
@@ -281,7 +399,7 @@ void hk_gui_init(const char* title, int w, int h) {
     io.FontGlobalScale = 1.0f / dpi_scale;  /* render at logical pixels */
 
     /* --- Ilseon colour theme --- */
-    hk_apply_ilseon_theme();
+    hk_apply_hica_theme();
 
     /* Backends: GLSL version must match the context we requested above */
     ImGui_ImplSDL2_InitForOpenGL(g_window, g_gl_ctx);
@@ -332,7 +450,7 @@ void hk_gui_end_frame(void) {
     ImGuiIO& io = ImGui::GetIO();
     SDL_GL_MakeCurrent(g_window, g_gl_ctx);
     glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-    glClearColor(0.047f, 0.047f, 0.063f, 1.00f); /* Ilseon OLED black #0C0C10 */
+    glClearColor(0.902f, 0.914f, 0.933f, 1.00f); /* hica window bg #E6E9EE */
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     SDL_GL_SwapWindow(g_window);
