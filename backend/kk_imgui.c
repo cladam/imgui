@@ -67,6 +67,10 @@ void        hk_gui_push_item_width(double w);
 void        hk_gui_pop_item_width(void);
 int         hk_gui_tree_node(const char* label);
 void        hk_gui_tree_pop(void);
+int         hk_gui_begin_tab_bar(const char* id);
+void        hk_gui_end_tab_bar(void);
+int         hk_gui_begin_tab_item(const char* label);
+void        hk_gui_end_tab_item(void);
 
 /* ---------------------------------------------------------------------------
  * Lifecycle
@@ -323,6 +327,30 @@ static bool kk_hk_gui_tree_node(kk_string_t label, kk_context_t* ctx) {
 
 static kk_unit_t kk_hk_gui_tree_pop(kk_context_t* ctx) {
     hk_gui_tree_pop();
+    return kk_Unit;
+}
+
+static bool kk_hk_gui_begin_tab_bar(kk_string_t id, kk_context_t* ctx) {
+    const char* cid = kk_string_cbuf_borrow(id, NULL, ctx);
+    bool r = hk_gui_begin_tab_bar(cid) != 0;
+    kk_string_drop(id, ctx);
+    return r;
+}
+
+static kk_unit_t kk_hk_gui_end_tab_bar(kk_context_t* ctx) {
+    hk_gui_end_tab_bar();
+    return kk_Unit;
+}
+
+static bool kk_hk_gui_begin_tab_item(kk_string_t label, kk_context_t* ctx) {
+    const char* lbl = kk_string_cbuf_borrow(label, NULL, ctx);
+    bool r = hk_gui_begin_tab_item(lbl) != 0;
+    kk_string_drop(label, ctx);
+    return r;
+}
+
+static kk_unit_t kk_hk_gui_end_tab_item(kk_context_t* ctx) {
+    hk_gui_end_tab_item();
     return kk_Unit;
 }
 

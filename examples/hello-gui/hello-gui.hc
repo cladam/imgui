@@ -133,6 +133,58 @@ fun main() {
       gui_end_panel()
     }
 
+    // ── Tree nodes ────────────────────────────────────────────────────────
+    if gui_begin_panel("Tree & Groups") {
+      gui_tree("Fruits", () => {
+        gui_bullet_text("Apple")
+        gui_bullet_text("Banana")
+        gui_tree("Citrus", () => {
+          gui_bullet_text("Lemon")
+          gui_bullet_text("Orange")
+        })
+      })
+      gui_tree("Colours", () => {
+        gui_text_colored("Red",   1.0, 0.3, 0.3, 1.0)
+        gui_text_colored("Green", 0.3, 1.0, 0.3, 1.0)
+        gui_text_colored("Blue",  0.3, 0.6, 1.0, 1.0)
+      })
+      gui_spacing()
+      gui_text("Narrow sliders via gui_with_item_width:")
+      gui_with_item_width(100.0, () => {
+        volume = gui_slider_int("##vol", 0, 100, volume)
+      })
+      gui_same_line()
+      gui_text("vol: " + show(volume))
+      gui_end_panel()
+    }
+
+    // ── Tabs ──────────────────────────────────────────────────────────────
+    if gui_begin_panel("Tabs") {
+      gui_tab_bar("##demo_tabs", () => {
+        gui_tab("Overview", () => {
+          gui_text_wrapped("Tabs let you show multiple views in the same panel area.")
+          gui_spacing()
+          gui_bullet_text("Switch tabs by clicking the labels above.")
+          gui_bullet_text("Use gui_tab_bar + gui_tab for closure-style tabs.")
+        })
+        gui_tab("Stats", () => {
+          gui_text("Counter value: " + show(count))
+          gui_text("Volume:        " + show(volume))
+          gui_text("Zoom:          " + show(zoom))
+          gui_text("Score:         " + show(score))
+        })
+        gui_tab("Settings", () => {
+          gui_with_item_width(120.0, () => {
+            volume = gui_slider_int("Volume##tab", 0, 100, volume)
+          })
+          gui_with_item_width(120.0, () => {
+            zoom = gui_slider_float("Zoom##tab", 0.1, 5.0, zoom)
+          })
+        })
+      })
+      gui_end_panel()
+    }
+
     // ── About ─────────────────────────────────────────────────────────────
     if gui_begin_panel("About") {
       gui_text("hica — a compiled language that targets Koka.")

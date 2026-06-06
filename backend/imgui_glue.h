@@ -177,6 +177,22 @@ int hk_gui_tree_node(const char* label);
 /* Close a tree node opened by hk_gui_tree_node. */
 void hk_gui_tree_pop(void);
 
+/* Begin a tab bar.  id must be a unique string per window.
+ * Returns 1 if the tab bar is visible; caller must call hk_gui_end_tab_bar()
+ * only when this returns 1. */
+int hk_gui_begin_tab_bar(const char* id);
+
+/* Close a tab bar opened by hk_gui_begin_tab_bar. */
+void hk_gui_end_tab_bar(void);
+
+/* Begin a tab item within the current tab bar.
+ * Returns 1 when this tab is selected; caller should render contents and
+ * call hk_gui_end_tab_item() only when this returns 1. */
+int hk_gui_begin_tab_item(const char* label);
+
+/* Close a tab item opened by hk_gui_begin_tab_item. */
+void hk_gui_end_tab_item(void);
+
 #ifdef __cplusplus
 }
 #endif

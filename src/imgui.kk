@@ -203,3 +203,27 @@ pub fun hc_gui_child(id : string, w : float64, h : float64, content)
     ()
   content()
   gui_end_child()
+
+// .hc:45
+pub fun hc_gui_tree(label : string, content)
+  if gui_tree_node(label) then
+    content()
+    gui_tree_pop()
+
+// .hc:58
+pub fun hc_gui_with_item_width(w : float64, content)
+  gui_push_item_width(w)
+  content()
+  gui_pop_item_width()
+
+// .hc:69
+pub fun hc_gui_tab_bar(id : string, content)
+  if gui_begin_tab_bar(id) then
+    content()
+    gui_end_tab_bar()
+
+// .hc:79
+pub fun hc_gui_tab(label : string, content)
+  if gui_begin_tab_item(label) then
+    content()
+    gui_end_tab_item()

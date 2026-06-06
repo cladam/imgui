@@ -38,3 +38,49 @@ pub fun gui_child(id: string, w: float, h: float, content: () -> ()) {
   content()
   gui_end_child()
 }
+
+// Collapsible tree node.  Renders children only when expanded.
+//
+//   gui_tree("Fruits", () => {
+//     gui_bullet_text("Apple")
+//     gui_bullet_text("Banana")
+//   })
+pub fun gui_tree(label: string, content: () -> ()) {
+  if gui_tree_node(label) {
+    content()
+    gui_tree_pop()
+  }
+}
+
+// Push item width for one widget, then restore.
+//
+//   gui_with_item_width(120.0, () => {
+//     volume = gui_slider_int("##vol", 0, 100, volume)
+//   })
+pub fun gui_with_item_width(w: float, content: () -> ()) {
+  gui_push_item_width(w)
+  content()
+  gui_pop_item_width()
+}
+
+// Tab bar with closure-style tabs.
+//
+//   gui_tab_bar("##tabs", () => {
+//     gui_tab("Stats", () => { gui_text("stats here") })
+//     gui_tab("Config", () => { gui_text("config here") })
+//   })
+pub fun gui_tab_bar(id: string, content: () -> ()) {
+  if gui_begin_tab_bar(id) {
+    content()
+    gui_end_tab_bar()
+  }
+}
+
+// Renders one tab inside a gui_tab_bar block.
+// content() is only called when this tab is the active one.
+pub fun gui_tab(label: string, content: () -> ()) {
+  if gui_begin_tab_item(label) {
+    content()
+    gui_end_tab_item()
+  }
+}

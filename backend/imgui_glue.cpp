@@ -499,3 +499,19 @@ int hk_gui_tree_node(const char* label) {
 }
 
 void hk_gui_tree_pop(void) { ImGui::TreePop(); }
+
+int hk_gui_begin_tab_bar(const char* id) {
+    return ImGui::BeginTabBar(id) ? 1 : 0;
+}
+
+void hk_gui_end_tab_bar(void) {
+    ImGui::EndTabBar();
+}
+
+int hk_gui_begin_tab_item(const char* label) {
+    return ImGui::BeginTabItem(label) ? 1 : 0;
+}
+
+void hk_gui_end_tab_item(void) {
+    ImGui::EndTabItem();
+}
