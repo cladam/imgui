@@ -7,7 +7,7 @@
 @description {
     summary: "Dear ImGui binding for hica — SDL2 + OpenGL3 backend with Inter font and Ilseon theme"
     author: "Claes Adamsson"
-    homepage: "https://hica-lang.org"
+    homepage: "https://www.hica.dev"
     repository: "https://github.com/cladam/imgui"
 }
 
