@@ -1,0 +1,4 @@
+@todo(text: 'Read a book', done: true)
+@todo(text: 'Go skateboarding', done: false)
+@todo(text: 'take a dip in the ocean', done: false)
+@todo(text: 'fix the TODO demo', done: false)

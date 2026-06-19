@@ -499,6 +499,7 @@ int hk_gui_button(const char* label) {
 int hk_gui_checkbox(const char* label, int def) {
     bool* v = bool_state(label, def != 0);
     if (!v) return def;
+    *v = (def != 0);   /* sync from caller every frame so external model changes are reflected */
     ImGui::Checkbox(label, v);
     return *v ? 1 : 0;
 }
