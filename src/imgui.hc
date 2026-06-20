@@ -206,7 +206,7 @@ pub fun gui_set_style_padding(frame_x: float, frame_y: float) {
 }
 
 // Solid coloured square; returns true when clicked.
-pub fun gui_color_button(id: string, r: float, g: float, b: float, a: float, w: float, h: float) : bool {
+pub fun gui_color_button(id: string, r: float, g: float, b: float, a: float, w: float, h: float) {
   gui_raw_color_button(id, r, g, b, a, w, h)
 }
 
