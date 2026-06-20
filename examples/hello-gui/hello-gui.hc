@@ -22,7 +22,8 @@
 //   hica run examples/hello-gui/hello-gui.hc
 
 import "../../src/imgui"
-import "./my_theme"
+//import "./my_theme"
+import "./tbdflow_ui"
 
 fun main() {
   // --- counter section ---
