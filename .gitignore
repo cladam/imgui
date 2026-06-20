@@ -14,3 +14,10 @@ examples/*/*
 !examples/**/*.hml
 !examples/**/*.md
 
+src/*
+!src/*.hc
+!src/imgui_ffi.kk
+
+tests/*
+!tests/*.hc
+
