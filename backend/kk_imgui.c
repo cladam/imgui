@@ -105,6 +105,25 @@ void        hk_gui_set_color_modal_dim(double alpha);
 void        hk_gui_set_style_window_padding(double x, double y);
 void        hk_gui_set_style_spacing(double item_x, double item_y, double indent);
 void        hk_gui_set_style_borders(double window, double frame);
+/* ImPlot */
+void        hk_plot_push(const char* label, double y);
+void        hk_plot_push_xy(const char* label, double x, double y);
+void        hk_plot_clear(const char* label);
+void        hk_plot_clear_all(void);
+int         hk_plot_begin(const char* title, double w, double h);
+void        hk_plot_end(void);
+void        hk_plot_setup_axes(const char* x_label, const char* y_label);
+void        hk_plot_setup_axis_limits(int axis, double v_min, double v_max, int cond);
+void        hk_plot_line(const char* label);
+void        hk_plot_shaded(const char* label, double y_ref);
+void        hk_plot_bars(const char* label, double bar_width);
+void        hk_plot_scatter(const char* label);
+void        hk_plot_pie_chart(const char* labels_nl, const char* values_csv, double cx, double cy, double radius);
+void        hk_plot_stairs(const char* label);
+void        hk_plot_stems(const char* label, double ref);
+void        hk_plot_histogram(const char* label, int bins);
+void        hk_plot_heatmap(const char* label, const char* values_csv, int rows, int cols, double scale_min, double scale_max);
+void        hk_plot_inf_lines(const char* label);
 
 /* ---------------------------------------------------------------------------
  * Lifecycle
@@ -583,5 +602,147 @@ static kk_unit_t kk_hk_gui_progress_bar(double fraction, kk_string_t overlay,
     /* Empty string means no overlay label — pass NULL so ImGui shows the default % */
     hk_gui_progress_bar(fraction, ov[0] != '\0' ? ov : NULL);
     kk_string_drop(overlay, ctx);
+    return kk_Unit;
+}
+
+/* ---------------------------------------------------------------------------
+ * ImPlot — FFI trampolines
+ * -------------------------------------------------------------------------*/
+
+static kk_unit_t kk_hk_plot_push(kk_string_t label, double y, kk_context_t* ctx) {
+    const char* l = kk_string_cbuf_borrow(label, NULL, ctx);
+    hk_plot_push(l, y);
+    kk_string_drop(label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_push_xy(kk_string_t label, double x, double y, kk_context_t* ctx) {
+    const char* l = kk_string_cbuf_borrow(label, NULL, ctx);
+    hk_plot_push_xy(l, x, y);
+    kk_string_drop(label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_clear(kk_string_t label, kk_context_t* ctx) {
+    const char* l = kk_string_cbuf_borrow(label, NULL, ctx);
+    hk_plot_clear(l);
+    kk_string_drop(label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_clear_all(kk_context_t* ctx) {
+    hk_plot_clear_all();
+    return kk_Unit;
+}
+
+static bool kk_hk_plot_begin(kk_string_t title, double w, double h, kk_context_t* ctx) {
+    const char* t = kk_string_cbuf_borrow(title, NULL, ctx);
+    bool r = hk_plot_begin(t, w, h) != 0;
+    kk_string_drop(title, ctx);
+    return r;
+}
+
+static kk_unit_t kk_hk_plot_end(kk_context_t* ctx) {
+    hk_plot_end();
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_setup_axes(kk_string_t x_label, kk_string_t y_label,
+                                        kk_context_t* ctx) {
+    const char* xl = kk_string_cbuf_borrow(x_label, NULL, ctx);
+    const char* yl = kk_string_cbuf_borrow(y_label, NULL, ctx);
+    hk_plot_setup_axes(xl, yl);
+    kk_string_drop(x_label, ctx);
+    kk_string_drop(y_label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_setup_axis_limits(kk_integer_t axis, double v_min, double v_max,
+                                               kk_integer_t cond, kk_context_t* ctx) {
+    hk_plot_setup_axis_limits(kk_integer_clamp32(axis, ctx), v_min, v_max,
+                               kk_integer_clamp32(cond, ctx));
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_line(kk_string_t label, kk_context_t* ctx) {
+    const char* l = kk_string_cbuf_borrow(label, NULL, ctx);
+    hk_plot_line(l);
+    kk_string_drop(label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_shaded(kk_string_t label, double y_ref, kk_context_t* ctx) {
+    const char* l = kk_string_cbuf_borrow(label, NULL, ctx);
+    hk_plot_shaded(l, y_ref);
+    kk_string_drop(label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_bars(kk_string_t label, double bar_width, kk_context_t* ctx) {
+    const char* l = kk_string_cbuf_borrow(label, NULL, ctx);
+    hk_plot_bars(l, bar_width);
+    kk_string_drop(label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_scatter(kk_string_t label, kk_context_t* ctx) {
+    const char* l = kk_string_cbuf_borrow(label, NULL, ctx);
+    hk_plot_scatter(l);
+    kk_string_drop(label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_pie_chart(kk_string_t labels_nl, kk_string_t values_csv,
+                                       double cx, double cy, double radius,
+                                       kk_context_t* ctx) {
+    const char* ls = kk_string_cbuf_borrow(labels_nl,  NULL, ctx);
+    const char* vs = kk_string_cbuf_borrow(values_csv, NULL, ctx);
+    hk_plot_pie_chart(ls, vs, cx, cy, radius);
+    kk_string_drop(labels_nl,  ctx);
+    kk_string_drop(values_csv, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_stairs(kk_string_t label, kk_context_t* ctx) {
+    const char* l = kk_string_cbuf_borrow(label, NULL, ctx);
+    hk_plot_stairs(l);
+    kk_string_drop(label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_stems(kk_string_t label, double ref, kk_context_t* ctx) {
+    const char* l = kk_string_cbuf_borrow(label, NULL, ctx);
+    hk_plot_stems(l, ref);
+    kk_string_drop(label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_histogram(kk_string_t label, kk_integer_t bins,
+                                       kk_context_t* ctx) {
+    const char* l = kk_string_cbuf_borrow(label, NULL, ctx);
+    hk_plot_histogram(l, kk_integer_clamp32(bins, ctx));
+    kk_string_drop(label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_heatmap(kk_string_t label, kk_string_t values_csv,
+                                     kk_integer_t rows, kk_integer_t cols,
+                                     double scale_min, double scale_max,
+                                     kk_context_t* ctx) {
+    const char* l  = kk_string_cbuf_borrow(label,      NULL, ctx);
+    const char* vs = kk_string_cbuf_borrow(values_csv, NULL, ctx);
+    hk_plot_heatmap(l, vs,
+                    kk_integer_clamp32(rows, ctx),
+                    kk_integer_clamp32(cols, ctx),
+                    scale_min, scale_max);
+    kk_string_drop(label,      ctx);
+    kk_string_drop(values_csv, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_plot_inf_lines(kk_string_t label, kk_context_t* ctx) {
+    const char* l = kk_string_cbuf_borrow(label, NULL, ctx);
+    hk_plot_inf_lines(l);
+    kk_string_drop(label, ctx);
     return kk_Unit;
 }

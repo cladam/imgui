@@ -27,6 +27,12 @@
 #include "../vendor/imgui/backends/imgui_impl_sdl2.h"
 #include "../vendor/imgui/backends/imgui_impl_opengl3.h"
 
+/* ImPlot — 2-D plotting extension */
+#include "../vendor/implot/implot.h"
+#include <vector>
+#include <string>
+#include <algorithm>
+
 /* ---------------------------------------------------------------------------
  * Internal state
  * -------------------------------------------------------------------------*/
@@ -387,6 +393,7 @@ void hk_gui_init(const char* title, int w, int h) {
     /* Dear ImGui setup */
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
@@ -464,6 +471,7 @@ void hk_gui_shutdown(void) {
     if (!g_window) return;
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
+    ImPlot::DestroyContext();
     ImGui::DestroyContext();
     SDL_GL_DeleteContext(g_gl_ctx);
     SDL_DestroyWindow(g_window);
@@ -884,4 +892,189 @@ void hk_gui_set_style_borders(double window, double frame) {
     ImGuiStyle& s = ImGui::GetStyle();
     s.WindowBorderSize = (float)window;
     s.FrameBorderSize  = (float)frame;
+}
+
+/* ---------------------------------------------------------------------------
+ * ImPlot — 2-D plotting
+ *
+ * Series are identified by a FNV-1a hash of their label string.
+ * Up to HK_MAX_SERIES distinct series are supported simultaneously.
+ * Each series grows dynamically; data is retained across frames.
+ * -------------------------------------------------------------------------*/
+
+#define HK_MAX_SERIES 64
+
+struct hk_plot_series {
+    uint32_t            hash;
+    std::vector<double> xs;
+    std::vector<double> ys;
+};
+
+static hk_plot_series g_plot_series[HK_MAX_SERIES];
+static int            g_plot_series_n = 0;
+
+static hk_plot_series* plot_get_series(const char* label) {
+    uint32_t h = fnv1a(label);
+    for (int i = 0; i < g_plot_series_n; i++)
+        if (g_plot_series[i].hash == h) return &g_plot_series[i];
+    if (g_plot_series_n < HK_MAX_SERIES) {
+        g_plot_series[g_plot_series_n] = { h, {}, {} };
+        return &g_plot_series[g_plot_series_n++];
+    }
+    fprintf(stderr, "hica imgui: plot series table full (max %d)\n", HK_MAX_SERIES);
+    return nullptr;
+}
+
+void hk_plot_push(const char* label, double y) {
+    auto* s = plot_get_series(label);
+    if (!s) return;
+    s->xs.push_back((double)s->xs.size());
+    s->ys.push_back(y);
+}
+
+void hk_plot_push_xy(const char* label, double x, double y) {
+    auto* s = plot_get_series(label);
+    if (!s) return;
+    s->xs.push_back(x);
+    s->ys.push_back(y);
+}
+
+void hk_plot_clear(const char* label) {
+    auto* s = plot_get_series(label);
+    if (!s) return;
+    s->xs.clear();
+    s->ys.clear();
+}
+
+void hk_plot_clear_all(void) {
+    for (int i = 0; i < g_plot_series_n; i++) {
+        g_plot_series[i].xs.clear();
+        g_plot_series[i].ys.clear();
+    }
+}
+
+int hk_plot_begin(const char* title, double w, double h) {
+    return ImPlot::BeginPlot(title, ImVec2((float)w, (float)h)) ? 1 : 0;
+}
+
+void hk_plot_end(void) {
+    ImPlot::EndPlot();
+}
+
+void hk_plot_setup_axes(const char* x_label, const char* y_label) {
+    ImPlot::SetupAxes(x_label, y_label);
+}
+
+void hk_plot_setup_axis_limits(int axis, double v_min, double v_max, int cond) {
+    ImPlotCond c = (cond == HK_PLOT_COND_ONCE) ? ImPlotCond_Once : ImPlotCond_Always;
+    ImPlot::SetupAxisLimits((ImAxis)axis, v_min, v_max, c);
+}
+
+void hk_plot_line(const char* label) {
+    auto* s = plot_get_series(label);
+    if (!s || s->ys.empty()) return;
+    ImPlot::PlotLine(label, s->xs.data(), s->ys.data(), (int)s->ys.size());
+}
+
+void hk_plot_shaded(const char* label, double y_ref) {
+    auto* s = plot_get_series(label);
+    if (!s || s->ys.empty()) return;
+    ImPlot::PlotShaded(label, s->xs.data(), s->ys.data(), (int)s->ys.size(), y_ref);
+}
+
+void hk_plot_bars(const char* label, double bar_width) {
+    auto* s = plot_get_series(label);
+    if (!s || s->ys.empty()) return;
+    ImPlot::PlotBars(label, s->xs.data(), s->ys.data(), (int)s->ys.size(), bar_width);
+}
+
+void hk_plot_scatter(const char* label) {
+    auto* s = plot_get_series(label);
+    if (!s || s->ys.empty()) return;
+    ImPlot::PlotScatter(label, s->xs.data(), s->ys.data(), (int)s->ys.size());
+}
+
+void hk_plot_pie_chart(const char* labels_nl, const char* values_csv,
+                       double cx, double cy, double radius) {
+    /* Parse newline-separated labels */
+    std::vector<std::string> label_strs;
+    std::string tok;
+    for (const char* p = labels_nl; ; ++p) {
+        if (*p == '\n' || *p == '\0') {
+            if (!tok.empty()) { label_strs.push_back(tok); tok.clear(); }
+            if (*p == '\0') break;
+        } else {
+            tok += *p;
+        }
+    }
+
+    /* Parse comma-separated values */
+    std::vector<double> vals;
+    std::string vtok;
+    for (const char* p = values_csv; ; ++p) {
+        if (*p == ',' || *p == '\0') {
+            if (!vtok.empty()) { vals.push_back(std::stod(vtok)); vtok.clear(); }
+            if (*p == '\0') break;
+        } else {
+            vtok += *p;
+        }
+    }
+
+    int n = (int)std::min(label_strs.size(), vals.size());
+    if (n <= 0) return;
+
+    std::vector<const char*> label_ptrs;
+    label_ptrs.reserve(n);
+    for (int i = 0; i < n; i++) label_ptrs.push_back(label_strs[i].c_str());
+
+    ImPlot::PlotPieChart(label_ptrs.data(), vals.data(), n, cx, cy, radius);
+}
+
+void hk_plot_stairs(const char* label) {
+    auto* s = plot_get_series(label);
+    if (!s || s->ys.empty()) return;
+    ImPlot::PlotStairs(label, s->xs.data(), s->ys.data(), (int)s->ys.size());
+}
+
+void hk_plot_stems(const char* label, double ref) {
+    auto* s = plot_get_series(label);
+    if (!s || s->ys.empty()) return;
+    ImPlot::PlotStems(label, s->xs.data(), s->ys.data(), (int)s->ys.size(), ref);
+}
+
+void hk_plot_histogram(const char* label, int bins) {
+    auto* s = plot_get_series(label);
+    if (!s || s->ys.empty()) return;
+    int b = (bins <= 0) ? ImPlotBin_Sturges : bins;
+    ImPlot::PlotHistogram(label, s->ys.data(), (int)s->ys.size(), b);
+}
+
+void hk_plot_heatmap(const char* label, const char* values_csv,
+                     int rows, int cols,
+                     double scale_min, double scale_max) {
+    /* Parse comma-separated values into a flat array */
+    std::vector<double> vals;
+    std::string tok;
+    for (const char* p = values_csv; ; ++p) {
+        if (*p == ',' || *p == '\0') {
+            if (!tok.empty()) { vals.push_back(std::stod(tok)); tok.clear(); }
+            if (*p == '\0') break;
+        } else {
+            tok += *p;
+        }
+    }
+    if ((int)vals.size() < rows * cols) return;
+    /* If scale_min == scale_max, let ImPlot auto-scale */
+    double smin = scale_min, smax = scale_max;
+    if (smin == smax) {
+        smin = *std::min_element(vals.begin(), vals.end());
+        smax = *std::max_element(vals.begin(), vals.end());
+    }
+    ImPlot::PlotHeatmap(label, vals.data(), rows, cols, smin, smax);
+}
+
+void hk_plot_inf_lines(const char* label) {
+    auto* s = plot_get_series(label);
+    if (!s || s->xs.empty()) return;
+    ImPlot::PlotInfLines(label, s->xs.data(), (int)s->xs.size());
 }

@@ -244,3 +244,41 @@ pub fun gui_set_style_spacing(item_x: float, item_y: float, indent: float) {
 pub fun gui_set_style_borders(window: float, frame: float) {
   gui_raw_set_style_borders(window, frame)
 }
+
+// ---------------------------------------------------------------------------
+// ImPlot — 2-D plotting
+//
+// Use plot_push / plot_push_xy to feed data into named series, then call
+// gui_plot (or the lower-level plot_begin / plot_end) to render them.
+//
+// Example:
+//
+//   // update data (e.g. inside gui_window callback, each frame):
+//   plot_push("CPU", cpu_percent)
+//
+//   // render:
+//   gui_plot("##cpu_chart", 0.0, 200.0, () => {
+//     plot_setup_axes("frame", "%")
+//     plot_setup_axis_limits(1, 0.0, 100.0, 1)   // Y1, 0–100, set once
+//     plot_shaded("CPU", 0.0)
+//     plot_line("CPU")
+//   })
+//
+// Axis constants for plot_setup_axis_limits:
+//   0 = X1 (bottom)   1 = Y1 (left)   2 = X2 (top)   3 = Y2 (right)
+//
+// Condition constants:  0 = always lock range   1 = set once (user can pan/zoom)
+// ---------------------------------------------------------------------------
+
+// Plot region with closure API.  content() is called only when the plot is visible.
+// w=0.0 fills available width; h=0.0 fills available height.
+pub fun gui_plot(title: string, w: float, h: float, content: () -> ()) {
+  if plot_begin(title, w, h) {
+    content()
+    plot_end()
+  }
+}
+// Axis and condition constants are exported directly from imgui_ffi:
+//   plot_axis_x1 = 0, plot_axis_y1 = 3  (primary axes, always enabled)
+//   plot_axis_x2 = 1, plot_axis_y2 = 4  (secondary axes, disabled by default)
+//   plot_cond_always = 0, plot_cond_once = 1

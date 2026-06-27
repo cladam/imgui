@@ -346,3 +346,110 @@ pub extern gui_raw_set_style_spacing( item_x : float64, item_y : float64, indent
 // Window and frame border thickness (0=none, 1=thin).
 pub extern gui_raw_set_style_borders( window : float64, frame : float64 ) : io ()
   c "kk_hk_gui_set_style_borders"
+
+// ---------------------------------------------------------------------------
+// ImPlot — 2-D plotting
+//
+// Axis constants (pass to plot_setup_axis_limits).
+// These match implot's ImAxis enum exactly:
+//   X1=0 (bottom, always enabled)   X2=1 (top, disabled)    X3=2 (disabled)
+//   Y1=3 (left,   always enabled)   Y2=4 (right, disabled)  Y3=5 (disabled)
+//
+// Condition constants (pass to plot_setup_axis_limits):
+//   0 = always (lock the axis range every frame)
+//   1 = once   (set range only on first frame; user can then pan/zoom)
+// ---------------------------------------------------------------------------
+
+// Axis identifiers — use these instead of raw integers.
+pub val plot-axis-x1 : int = 0
+pub val plot-axis-x2 : int = 1
+pub val plot-axis-x3 : int = 2
+pub val plot-axis-y1 : int = 3
+pub val plot-axis-y2 : int = 4
+pub val plot-axis-y3 : int = 5
+
+// Condition identifiers for plot_setup_axis_limits.
+pub val plot-cond-always : int = 0
+pub val plot-cond-once   : int = 1
+
+// Append a y-value to the named series (x auto-increments from 0).
+pub extern plot_push( label : string, y : float64 ) : io ()
+  c "kk_hk_plot_push"
+
+// Append an explicit (x, y) pair to the named series.
+pub extern plot_push_xy( label : string, x : float64, y : float64 ) : io ()
+  c "kk_hk_plot_push_xy"
+
+// Remove all data points from the named series.
+pub extern plot_clear( label : string ) : io ()
+  c "kk_hk_plot_clear"
+
+// Remove all data points from every series.
+pub extern plot_clear_all() : io ()
+  c "kk_hk_plot_clear_all"
+
+// Begin a plot region.  w=0 fills available width; h=0 fills available height.
+// Returns true when visible; call plot_end() ONLY when this returns true.
+pub extern plot_begin( title : string, w : float64, h : float64 ) : io bool
+  c "kk_hk_plot_begin"
+
+// End a plot region opened by plot_begin.  Call only when plot_begin returned true.
+pub extern plot_end() : io ()
+  c "kk_hk_plot_end"
+
+// Set axis labels.  Call inside a plot_begin/plot_end block.
+pub extern plot_setup_axes( x_label : string, y_label : string ) : io ()
+  c "kk_hk_plot_setup_axes"
+
+// Set an explicit axis range.
+// axis: 0=X1, 1=Y1, 2=X2, 3=Y2.  cond: 0=always, 1=once (first frame only).
+pub extern plot_setup_axis_limits( axis : int, v_min : float64, v_max : float64, cond : int ) : io ()
+  c "kk_hk_plot_setup_axis_limits"
+
+// Draw a line plot from the named series.  Call inside a plot_begin/end block.
+pub extern plot_line( label : string ) : io ()
+  c "kk_hk_plot_line"
+
+// Draw a shaded area from the named series down to y_ref (typically 0.0).
+pub extern plot_shaded( label : string, y_ref : float64 ) : io ()
+  c "kk_hk_plot_shaded"
+
+// Draw a bar chart from the named series.  bar_width in axis units (0.67 typical).
+pub extern plot_bars( label : string, bar_width : float64 ) : io ()
+  c "kk_hk_plot_bars"
+
+// Draw a scatter plot from the named series.
+pub extern plot_scatter( label : string ) : io ()
+  c "kk_hk_plot_scatter"
+
+// Draw a pie chart.
+// labels_nl  : newline-separated segment labels  e.g. "Apple\nBanana\nCherry"
+// values_csv : comma-separated segment sizes     e.g. "30,50,20"
+// cx, cy     : centre in normalised [0,1] plot coordinates
+// radius     : radius in normalised [0,1] units
+pub extern plot_pie_chart( labels_nl : string, values_csv : string, cx : float64, cy : float64, radius : float64 ) : io ()
+  c "kk_hk_plot_pie_chart"
+
+// Draw a stairstep (step-line) plot from the named series.
+pub extern plot_stairs( label : string ) : io ()
+  c "kk_hk_plot_stairs"
+
+// Draw a stem plot — vertical lines from ref to each y-value in the named series.
+pub extern plot_stems( label : string, ref : float64 ) : io ()
+  c "kk_hk_plot_stems"
+
+// Draw a histogram of the y-values in the named series.
+// bins: number of bins; pass 0 for auto (Sturges' rule).
+pub extern plot_histogram( label : string, bins : int ) : io ()
+  c "kk_hk_plot_histogram"
+
+// Draw a 2-D heatmap.
+// values_csv : row-major comma-separated grid values, e.g. "1,2,3,4,5,6"
+// rows, cols : grid dimensions
+// scale_min/max : colour-scale range; pass equal values for auto-scale
+pub extern plot_heatmap( label : string, values_csv : string, rows : int, cols : int, scale_min : float64, scale_max : float64 ) : io ()
+  c "kk_hk_plot_heatmap"
+
+// Draw infinite vertical lines at the x-positions stored in the named series.
+pub extern plot_inf_lines( label : string ) : io ()
+  c "kk_hk_plot_inf_lines"

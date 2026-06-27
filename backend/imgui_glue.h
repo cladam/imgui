@@ -338,6 +338,106 @@ void hk_gui_set_style_spacing(double item_x, double item_y, double indent);
 /* Window and frame border thickness in pixels (0 = none, 1 = thin). */
 void hk_gui_set_style_borders(double window, double frame);
 
+/* ---------------------------------------------------------------------------
+ * ImPlot — 2-D plotting
+ *
+ * Axis identifiers (pass to hk_plot_setup_axis_limits):
+ *   HK_AXIS_X1=0  HK_AXIS_Y1=1  HK_AXIS_X2=2  HK_AXIS_Y2=3
+ *
+ * Condition identifiers:
+ *   HK_PLOT_COND_ALWAYS=0  — apply every frame
+ *   HK_PLOT_COND_ONCE=1    — apply only on the first frame (user can then pan/zoom)
+ *
+ * Series data pattern:
+ *   hk_plot_push("CPU", value);          // call each frame before the plot region
+ *   if (hk_plot_begin("##chart", 400, 200)) {
+ *       hk_plot_setup_axes("time", "%");
+ *       hk_plot_line("CPU");
+ *       hk_plot_end();
+ *   }
+ * -------------------------------------------------------------------------*/
+
+#define HK_AXIS_X1           0   /* ImAxis_X1 — primary horizontal, enabled by default */
+#define HK_AXIS_X2           1   /* ImAxis_X2 — secondary horizontal, disabled by default */
+#define HK_AXIS_X3           2   /* ImAxis_X3 — tertiary horizontal, disabled by default */
+#define HK_AXIS_Y1           3   /* ImAxis_Y1 — primary vertical, enabled by default */
+#define HK_AXIS_Y2           4   /* ImAxis_Y2 — secondary vertical, disabled by default */
+#define HK_AXIS_Y3           5   /* ImAxis_Y3 — tertiary vertical, disabled by default */
+
+#define HK_PLOT_COND_ALWAYS  0
+#define HK_PLOT_COND_ONCE    1
+
+/* Append a y-value to the named series (x auto-increments from 0). */
+void hk_plot_push(const char* label, double y);
+
+/* Append an explicit (x, y) pair to the named series. */
+void hk_plot_push_xy(const char* label, double x, double y);
+
+/* Remove all data points from the named series. */
+void hk_plot_clear(const char* label);
+
+/* Remove all data points from every series. */
+void hk_plot_clear_all(void);
+
+/* Begin a plot region.  w=0 fills available width; h=0 fills available height.
+ * Returns 1 when the plot is visible; call hk_plot_end() ONLY in that case. */
+int  hk_plot_begin(const char* title, double w, double h);
+
+/* End a plot region.  Call only when hk_plot_begin returned 1. */
+void hk_plot_end(void);
+
+/* Set axis labels.  Call inside a begin/end block. */
+void hk_plot_setup_axes(const char* x_label, const char* y_label);
+
+/* Set an explicit axis range.
+ * axis : HK_AXIS_X1 / Y1 / X2 / Y2
+ * cond : HK_PLOT_COND_ALWAYS or HK_PLOT_COND_ONCE (first frame only). */
+void hk_plot_setup_axis_limits(int axis, double v_min, double v_max, int cond);
+
+/* Draw a line plot from the named series.  Call inside a begin/end block. */
+void hk_plot_line(const char* label);
+
+/* Draw a shaded area plot from the named series.  y_ref is the baseline y value
+ * (typically 0.0).  Call inside a begin/end block. */
+void hk_plot_shaded(const char* label, double y_ref);
+
+/* Draw a bar chart from the named series.  bar_width in axis units (0.67 is typical).
+ * Call inside a begin/end block. */
+void hk_plot_bars(const char* label, double bar_width);
+
+/* Draw a scatter plot from the named series.  Call inside a begin/end block. */
+void hk_plot_scatter(const char* label);
+
+/* Draw a pie chart.
+ * labels_nl  : newline-separated segment labels,  e.g. "Apple\nBanana\nCherry"
+ * values_csv : comma-separated segment sizes,     e.g. "30,50,20"
+ * cx, cy     : centre in normalised [0,1] plot coordinates
+ * radius     : radius in normalised [0,1] units */
+void hk_plot_pie_chart(const char* labels_nl, const char* values_csv,
+                       double cx, double cy, double radius);
+
+/* Draw a stairstep (step-line) plot from the named series. */
+void hk_plot_stairs(const char* label);
+
+/* Draw a stem plot — vertical lines from ref to each value in the named series. */
+void hk_plot_stems(const char* label, double ref);
+
+/* Draw a histogram of the ys values in the named series.
+ * bins : number of bins (pass 0 for auto / Sturges' rule). */
+void hk_plot_histogram(const char* label, int bins);
+
+/* Draw a heatmap.
+ * label      : plot label
+ * values_csv : row-major, comma-separated grid values, e.g. "1,2,3,4,5,6"
+ * rows, cols : grid dimensions
+ * scale_min/max : colour-scale range (pass equal values for auto-scale) */
+void hk_plot_heatmap(const char* label, const char* values_csv,
+                     int rows, int cols,
+                     double scale_min, double scale_max);
+
+/* Draw infinite vertical lines at the x-positions stored in the named series. */
+void hk_plot_inf_lines(const char* label);
+
 #ifdef __cplusplus
 }
 #endif

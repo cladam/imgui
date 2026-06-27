@@ -31,11 +31,24 @@ fun hc_lcm(a : int, b : int)
 fun hc_pow(base : int, exp : int)
   if (exp <= 0) then 1 else (base * hc_pow(base, (exp - 1)))
 
-fun hc_sign(n : int)
+fun hc_sign(n : int) : int
   if (n > 0) then 1 else if (n < 0) then (0 - 1) else 0
 
-fun hc_isqrt(n : int) : int
-  floor(sqrt(n.float64)).int
+fun hc_isqrt(n : int)
+  if (n <= 0) then
+    0
+  else
+    val x0 : int = n
+    val x1 : int = ((x0 + 1) / 2)
+    val result : int = hc_isqrt_loop(n, x0, x1)
+    result
+
+fun hc_isqrt_loop(n : int, x0 : int, x1 : int)
+  if (x1 >= x0) then
+    x0
+  else
+    val x2 : int = ((x1 + (n / x1)) / 2)
+    hc_isqrt_loop(n, x1, x2)
 
 fun hc_is_digit(c : char) : bool
   val n : int = c.int
@@ -315,3 +328,9 @@ pub fun hc_gui_set_style_spacing(item_x : float64, item_y : float64, indent : fl
 // .hc:238
 pub fun hc_gui_set_style_borders(window : float64, frame : float64)
   gui_raw_set_style_borders(window, frame)
+
+// .hc:270
+pub fun hc_gui_plot(title : string, w : float64, h : float64, content)
+  if plot_begin(title, w, h) then
+    content()
+    plot_end()

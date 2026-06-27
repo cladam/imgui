@@ -19,6 +19,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VENDOR="$SCRIPT_DIR/vendor/imgui"
+IMPLOT="$SCRIPT_DIR/vendor/implot"
 BACKEND="$SCRIPT_DIR/backend"
 OUT_DIR="$SCRIPT_DIR/lib"
 OUT_LIB="$OUT_DIR/libimgui_hica.a"
@@ -31,6 +32,15 @@ if [ ! -f "$VENDOR/imgui.h" ]; then
     echo "   Done."
 else
     echo "→ vendor/imgui already present — skipping clone"
+fi
+
+# ── 1b. Ensure ImPlot is present ─────────────────────────────────────────────
+if [ ! -f "$IMPLOT/implot.h" ]; then
+    echo "→ Cloning ImPlot into vendor/implot …"
+    git clone --depth=1 https://github.com/epezent/implot.git "$IMPLOT"
+    echo "   Done."
+else
+    echo "→ vendor/implot already present — skipping clone"
 fi
 
 # ── 2. Detect platform flags ─────────────────────────────────────────────────
@@ -48,6 +58,7 @@ fi
 CXX_FLAGS="-std=c++17 -O2 -fPIC -Wall \
     -I$VENDOR \
     -I$VENDOR/backends \
+    -I$IMPLOT \
     -I$BACKEND \
     $SDL2_CFLAGS \
     $PLATFORM_FLAGS"
@@ -62,6 +73,8 @@ SOURCES=(
     "$VENDOR/imgui_widgets.cpp"
     "$VENDOR/backends/imgui_impl_sdl2.cpp"
     "$VENDOR/backends/imgui_impl_opengl3.cpp"
+    "$IMPLOT/implot.cpp"
+    "$IMPLOT/implot_items.cpp"
     "$BACKEND/imgui_glue.cpp"
 )
 
