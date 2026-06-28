@@ -458,3 +458,9 @@ pub extern plot_inf_lines( label : string ) : io ()
 // Uses SDL_OpenURL (SDL 2.0.14+): open on macOS, xdg-open on Linux, ShellExecute on Windows.
 pub extern gui_open_url( url : string ) : io ()
   c "kk_hk_gui_open_url"
+
+// Render a hyperlink-style text button (ImGui::TextLink).
+// Opens url in the default browser when clicked.  No return value needed —
+// use gui_button + gui_open_url if you need custom click handling.
+pub extern gui_hyperlink( label : string, url : string ) : io ()
+  c "kk_hk_gui_hyperlink"

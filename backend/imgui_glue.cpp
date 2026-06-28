@@ -1082,3 +1082,8 @@ void hk_plot_inf_lines(const char* label) {
 void hk_gui_open_url(const char* url) {
     SDL_OpenURL(url);
 }
+
+void hk_gui_hyperlink(const char* label, const char* url) {
+    if (ImGui::TextLink(label))
+        SDL_OpenURL(url);
+}

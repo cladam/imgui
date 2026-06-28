@@ -442,6 +442,10 @@ void hk_plot_inf_lines(const char* label);
  * Works on macOS (open), Linux (xdg-open) and Windows. */
 void hk_gui_open_url(const char* url);
 
+/* Render a hyperlink-style text button (ImGui::TextLink).
+ * Opens url in the default browser when clicked. */
+void hk_gui_hyperlink(const char* label, const char* url);
+
 #ifdef __cplusplus
 }
 #endif
