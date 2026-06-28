@@ -1,77 +1,75 @@
 # imgui
 
-A Dear ImGui binding for [hica](https://github.com/cladam/hica). Immediate-mode GUI backed by [Dear ImGui](https://github.com/ocornut/imgui) + SDL2 + OpenGL3, with the Inter font and the Ilseon dark theme bundled out of the box.
+A Dear ImGui binding for [hica](https://github.com/cladam/hica). Immediate-mode GUI backed by [Dear ImGui](https://github.com/ocornut/imgui) + SDL2 + OpenGL3, with the Inter font and the Ilseon dark theme bundled out of the box. Includes [ImPlot](https://github.com/epezent/implot) for 2-D plotting.
 
 ## Installation
 
-### Option A: pre-built binary (recommended)
-
-No C++ compiler or ImGui source needed. Only SDL2 must be installed on the machine.
+### 1. Install SDL2
 
 ```sh
-# 1. Install SDL2
-brew install sdl2                          # macOS
-# sudo apt install libsdl2-dev             # Linux
+brew install sdl2                   # macOS
+# sudo apt install libsdl2-dev      # Linux
+```
 
-# 2. Add this repo as a submodule (brings imgui.kk + the C trampoline)
-git submodule add https://github.com/cladam/imgui.git lib/imgui
+### 2. Add the package
 
-# 3. Download the pre-built .a for your platform from:
-#    https://github.com/cladam/imgui/releases/latest
-mkdir -p lib/imgui/lib
+```sh
+hica add imgui
+hica fetch
+```
+
+This records the dependency in `hica.hml` and downloads the package.
+
+### 3. Download the pre-built static library
+
+`hica fetch` downloads the hica source files; the compiled C++ backend must be obtained separately (it contains native code that cannot be distributed as plain hica):
+
+```sh
+mkdir -p vendor/imgui/lib
 
 # macOS Apple Silicon:
 curl -L https://github.com/cladam/imgui/releases/latest/download/libimgui_hica-macos-arm64.a \
-     -o lib/imgui/lib/libimgui_hica.a
+     -o vendor/imgui/lib/libimgui_hica.a
 
 # Linux x86-64:
 # curl -L https://github.com/cladam/imgui/releases/latest/download/libimgui_hica-linux-x86_64.a \
-#      -o lib/imgui/lib/libimgui_hica.a
+#      -o vendor/imgui/lib/libimgui_hica.a
 ```
 
-### Option B — build from source
+Alternatively, build from source (requires clang++ and SDL2 dev headers):
 
 ```sh
-git submodule add https://github.com/cladam/imgui.git lib/imgui
-cd lib/imgui && ./build.sh   # requires clang++ and SDL2 dev headers
+cd vendor/imgui && ./build.sh
 ```
 
-### Common: import and link
+### 4. Configure `hica.hml`
 
-Import the library from your `.hc` file:
-
-```rust
-extern import "./lib/imgui/src/imgui"
-```
-
-Configure the linker in your `hica.hml`. The SDL2 lib path depends on where SDL2 is installed, use `sdl2-config --libs` to find it:
-
-```sh
-sdl2-config --libs
-# macOS Apple Silicon → -L/opt/homebrew/opt/sdl2/lib -lSDL2
-# Linux               → -L/usr/lib/x86_64-linux-gnu -lSDL2
-```
+Add the linker flags to your project's `hica.hml`. Run `sdl2-config --libs` to find the SDL2 lib path on your machine.
 
 **macOS:**
 ```hml
 @koka {
-    include: "./lib/imgui/src"
-    flags: "--cclinkopts=-L./lib/imgui/lib --cclinkopts=-L/opt/homebrew/opt/sdl2/lib --cclib=imgui_hica --cclib=SDL2 --cclinkopts=-lc++ --cclinkopts=-framework --cclinkopts=OpenGL"
+    flags: "--cclinkopts=-L./vendor/imgui/lib --cclinkopts=-L/opt/homebrew/opt/sdl2/lib --cclib=imgui_hica --cclib=SDL2 --cclinkopts=-lc++ --cclinkopts=-framework --cclinkopts=OpenGL"
 }
 ```
 
 **Linux:**
 ```hml
 @koka {
-    include: "./lib/imgui/src"
-    flags: "--cclinkopts=-L./lib/imgui/lib --cclib=imgui_hica --cclib=SDL2 --cclib=GL"
+    flags: "--cclinkopts=-L./vendor/imgui/lib --cclib=imgui_hica --cclib=SDL2 --cclib=GL"
 }
+```
+
+### 5. Import
+
+```hica
+import "imgui"
 ```
 
 ## Quick start
 
-```rust
-extern import "./lib/imgui/src/imgui"
+```hica
+import "imgui"
 
 fun main() {
   var count = 0
@@ -269,17 +267,14 @@ gui_window("Player", 400, 200, () => {
 
 ## Examples
 
-See [examples/hello-gui](examples/hello-gui/hello-gui.hc) in this repo for a full demo. Build and run:
+See [examples/hello-gui](examples/hello-gui/hello-gui.hc) in this repo for a full widget showcase, and [examples/chart](examples/chart/chart.hc) for ImPlot.
+
+To run the examples from a clone of this repo:
 
 ```sh
 ./build.sh                                # build libimgui_hica.a (once)
 hica run examples/hello-gui/hello-gui.hc
-```
-
-```sh
-cd examples/hello-gui
-hica build hello-gui.hc
-./hello-gui
+hica run examples/chart/chart.hc
 ```
 
 ## Building the C backend
