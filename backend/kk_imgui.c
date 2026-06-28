@@ -124,6 +124,7 @@ void        hk_plot_stems(const char* label, double ref);
 void        hk_plot_histogram(const char* label, int bins);
 void        hk_plot_heatmap(const char* label, const char* values_csv, int rows, int cols, double scale_min, double scale_max);
 void        hk_plot_inf_lines(const char* label);
+void        hk_gui_open_url(const char* url);
 
 /* ---------------------------------------------------------------------------
  * Lifecycle
@@ -744,5 +745,12 @@ static kk_unit_t kk_hk_plot_inf_lines(kk_string_t label, kk_context_t* ctx) {
     const char* l = kk_string_cbuf_borrow(label, NULL, ctx);
     hk_plot_inf_lines(l);
     kk_string_drop(label, ctx);
+    return kk_Unit;
+}
+
+static kk_unit_t kk_hk_gui_open_url(kk_string_t url, kk_context_t* ctx) {
+    const char* s = kk_string_cbuf_borrow(url, NULL, ctx);
+    hk_gui_open_url(s);
+    kk_string_drop(url, ctx);
     return kk_Unit;
 }

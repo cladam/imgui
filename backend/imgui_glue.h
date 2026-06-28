@@ -438,6 +438,10 @@ void hk_plot_heatmap(const char* label, const char* values_csv,
 /* Draw infinite vertical lines at the x-positions stored in the named series. */
 void hk_plot_inf_lines(const char* label);
 
+/* Open a URL in the system default browser (SDL_OpenURL, SDL 2.0.14+).
+ * Works on macOS (open), Linux (xdg-open) and Windows. */
+void hk_gui_open_url(const char* url);
+
 #ifdef __cplusplus
 }
 #endif

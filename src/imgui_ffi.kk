@@ -453,3 +453,8 @@ pub extern plot_heatmap( label : string, values_csv : string, rows : int, cols :
 // Draw infinite vertical lines at the x-positions stored in the named series.
 pub extern plot_inf_lines( label : string ) : io ()
   c "kk_hk_plot_inf_lines"
+
+// Open a URL in the system default browser.
+// Uses SDL_OpenURL (SDL 2.0.14+): open on macOS, xdg-open on Linux, ShellExecute on Windows.
+pub extern gui_open_url( url : string ) : io ()
+  c "kk_hk_gui_open_url"

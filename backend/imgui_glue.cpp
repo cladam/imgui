@@ -1078,3 +1078,7 @@ void hk_plot_inf_lines(const char* label) {
     if (!s || s->xs.empty()) return;
     ImPlot::PlotInfLines(label, s->xs.data(), (int)s->xs.size());
 }
+
+void hk_gui_open_url(const char* url) {
+    SDL_OpenURL(url);
+}
