@@ -446,6 +446,14 @@ void hk_gui_open_url(const char* url);
  * Opens url in the default browser when clicked. */
 void hk_gui_hyperlink(const char* label, const char* url);
 
+/* Display a button with a custom background and text colour.
+ * r, g, b         : background colour components (0.0–1.0).
+ * text_r, text_g, text_b : label colour components (0.0–1.0).
+ * Returns 1 on the frame the button is clicked, 0 otherwise. */
+int hk_gui_button_colored(const char* label,
+                          double r, double g, double b,
+                          double text_r, double text_g, double text_b);
+
 #ifdef __cplusplus
 }
 #endif

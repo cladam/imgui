@@ -126,6 +126,8 @@ void        hk_plot_heatmap(const char* label, const char* values_csv, int rows,
 void        hk_plot_inf_lines(const char* label);
 void        hk_gui_open_url(const char* url);
 void        hk_gui_hyperlink(const char* label, const char* url);
+int         hk_gui_button_colored(const char* label, double r, double g, double b,
+                                   double text_r, double text_g, double text_b);
 
 /* ---------------------------------------------------------------------------
  * Lifecycle
@@ -764,4 +766,14 @@ static kk_unit_t kk_hk_gui_hyperlink(kk_string_t label, kk_string_t url,
     kk_string_drop(label, ctx);
     kk_string_drop(url,   ctx);
     return kk_Unit;
+}
+
+static bool kk_hk_gui_button_colored(kk_string_t label,
+                                      double r, double g, double b,
+                                      double text_r, double text_g, double text_b,
+                                      kk_context_t* ctx) {
+    const char* lbl = kk_string_cbuf_borrow(label, NULL, ctx);
+    int result = hk_gui_button_colored(lbl, r, g, b, text_r, text_g, text_b);
+    kk_string_drop(label, ctx);
+    return result != 0;
 }

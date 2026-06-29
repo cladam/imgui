@@ -1087,3 +1087,17 @@ void hk_gui_hyperlink(const char* label, const char* url) {
     if (ImGui::TextLink(label))
         SDL_OpenURL(url);
 }
+
+int hk_gui_button_colored(const char* label,
+                          double r, double g, double b,
+                          double text_r, double text_g, double text_b) {
+    auto clamp01 = [](float v) { return v < 0.0f ? 0.0f : (v > 1.0f ? 1.0f : v); };
+    float fr = (float)r, fg = (float)g, fb = (float)b;
+    ImGui::PushStyleColor(ImGuiCol_Button,        ImVec4(fr,                   fg,                   fb,                   1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(clamp01(fr + 0.15f), clamp01(fg + 0.15f), clamp01(fb + 0.15f), 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive,  ImVec4(clamp01(fr - 0.10f), clamp01(fg - 0.10f), clamp01(fb - 0.10f), 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_Text,          ImVec4((float)text_r, (float)text_g, (float)text_b, 1.0f));
+    bool clicked = ImGui::Button(label);
+    ImGui::PopStyleColor(4);
+    return clicked ? 1 : 0;
+}

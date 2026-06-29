@@ -464,3 +464,11 @@ pub extern gui_open_url( url : string ) : io ()
 // use gui_button + gui_open_url if you need custom click handling.
 pub extern gui_hyperlink( label : string, url : string ) : io ()
   c "kk_hk_gui_hyperlink"
+
+// Display a button with a custom background and text colour.
+// r, g, b             : background colour components (0.0–1.0).
+// text_r, text_g, text_b : label colour components (0.0–1.0).
+// Hover and active variants are derived automatically (+0.15 / −0.10).
+// Returns true on the frame the button is clicked.
+pub extern gui_button_colored( label : string, r : float64, g : float64, b : float64, text_r : float64, text_g : float64, text_b : float64 ) : io bool
+  c "kk_hk_gui_button_colored"
